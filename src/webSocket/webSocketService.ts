@@ -1,9 +1,15 @@
 import { Server as SocketServer } from "socket.io";
+import { Server  } from "http";
+import { tratarEventosWebSockets } from "./tratarEventosWebSockets";
 
 
-export class ssk
+export class StaticSocketServer
 {
-    public servidorooo: SocketServer | undefined = undefined
+    public socketServer!: SocketServer;
+    public Start(httpServer: Server): void{
+        this.socketServer =  new SocketServer(httpServer, { /* options */ });
+        tratarEventosWebSockets();
+    }
 }
 
-export const servidorWebSocket: ssk = new ssk()
+export const servidorWebSocket: StaticSocketServer = new StaticSocketServer()
