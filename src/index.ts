@@ -1,3 +1,3 @@
-import { App } from "./app";
+import Application from './app';
 
-new App().httpServer.listen(3333)
+new Application().StartAsync();

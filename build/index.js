@@ -1,4 +1,8 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var app_1 = require("./app");
-new app_1.App().httpServer.listen(3333);
+var app_1 = __importDefault(require("./app"));
+new app_1.default().StartAsync();
+//# sourceMappingURL=index.js.map

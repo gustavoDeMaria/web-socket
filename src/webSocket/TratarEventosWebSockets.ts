@@ -1,13 +1,12 @@
+import { Eventos } from "./enum/Eventos";
+import { tratarDisconnect } from "./tratarDisconnect";
 import { tratarHandShake } from "./tratarHandShake";
-import { servidorWebSocket } from "./webSocketService";
+import { SocketServer } from "./webSocketService";
 
-export function tratarEventosWebSockets() {
-    
-    const socket = servidorWebSocket.socketServer;
+export function tratarEventosWebSockets(server: SocketServer) {
+    server.socketServer.on(Eventos.connection, (client) => {
+        client.on(Eventos.handshake, tratarHandShake(server, client));
 
-    socket.on("connection", (client) => {
-        client.on("handshake", tratarHandShake(client));
+        client.on(Eventos.disconnect, () => tratarDisconnect(server, client));
     });
 }
-
-

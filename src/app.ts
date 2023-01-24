@@ -1,26 +1,45 @@
-import express from "express";
+import express, { Express } from "express";
+import IApplication from "./interfaces/IApplication";
+import { StatusController } from "./controllers/StatusController";
+import { ControllerBase } from "./controllers/base/ControllerBase";
 import { Server, createServer } from "http";
-import { router } from "./router/router";
-import { servidorWebSocket } from "./webSocket/webSocketService";
+import DependecyService from "./dependencyInjection/DependecyService";
+import { IntegracaoController } from "./controllers/IntegracaoController";
+import { SocketServer } from "./webSocket/webSocketService";
 
-export class App {
+export default class Application implements IApplication {
 
-    private app: express.Application;
+    public Express: Express;
+
     public httpServer: Server;
 
     constructor() {
-        this.app = express();
-        this.httpServer = createServer(this.app);
-        this.middleware();
-        this.router();
-        servidorWebSocket.Start(this.httpServer);
+        process.env.dirname = __dirname;
+
+        this.Express = express();
+
+        this.httpServer = createServer(this.Express);
     }
 
-    public middleware() {
-        this.app.use(express.json());
+    public async StartAsync(): Promise<void> {
+        this.Configure();
+
+        this.httpServer.listen(3333, () => {
+            console.log(`App running on ${3333}`);
+        });
     }
 
-    public router() {
-        this.app.use(router);
+    public Configure(): void {
+
+        this.Express.use(express.json({ limit: 50 * 1024 * 1024 }));
+
+        var singleton = new SocketServer(this.httpServer);
+        DependecyService.Register(SocketServer, () => singleton);
+
+        DependecyService.Register(IntegracaoController);
+        DependecyService.Register(StatusController);
+
+        ControllerBase.AppendController(IntegracaoController, this);
+        ControllerBase.AppendController(StatusController, this);
     }
 }

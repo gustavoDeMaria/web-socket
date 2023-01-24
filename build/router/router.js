@@ -14,13 +14,10 @@ router.get("/integracao/pivotaltracker", function (req, res) {
             story.changes.forEach(function (modificacao) {
                 if (modificacao.new_values.current_state === "delivered") {
                     var cliente = Array.from(socketServer.sockets.sockets.values())
-                        .find(function (sc) { var _a; return ((_a = sc.data) === null || _a === void 0 ? void 0 : _a.UsuarioIntranet) === story.u; });
-                    socketServer.sockets.sockets.forEach(function (sc) {
-                        console.log("cliente", sc.data);
-                    });
+                        .find(function (sc) { var _a; return ((_a = sc.data) === null || _a === void 0 ? void 0 : _a.UsuarioIntranet) === story.performed_by.initials; });
                     console.log("cliente", cliente);
                     if (cliente) {
-                        socketServer.to(cliente === null || cliente === void 0 ? void 0 : cliente.id).emit("new-registration-requested", { Guide: "123", UltimoPivotal: "1234" });
+                        socketServer.to(cliente === null || cliente === void 0 ? void 0 : cliente.id).emit("new-registration-requested", { Guide: cliente === null || cliente === void 0 ? void 0 : cliente.id, UltimoPivotal: story. });
                     }
                 }
             });

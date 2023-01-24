@@ -4,6 +4,6 @@
   ],
   "ext": ".ts,.js",
   "ignore": [],
-  "exec": "tsc && npx ts-node ./src/index.ts",
+  "exec": "npx ts-node ./src/index.ts",
   "start:dev": "npx nodemon"
 }

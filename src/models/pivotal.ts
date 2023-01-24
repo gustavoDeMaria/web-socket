@@ -1,4 +1,3 @@
-declare module PivotalTracker {
 
     export interface PrimaryResource {
         story_type: string;
@@ -60,6 +59,3 @@ declare module PivotalTracker {
         project: Project;
         kind: string;
     }
-
-}
-
