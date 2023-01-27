@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { Express } from "express";
 import IApplication from "./interfaces/IApplication";
 import { StatusController } from "./controllers/StatusController";
@@ -5,7 +6,7 @@ import { ControllerBase } from "./controllers/base/ControllerBase";
 import { Server, createServer } from "http";
 import DependecyService from "./dependencyInjection/DependecyService";
 import { IntegracaoController } from "./controllers/IntegracaoController";
-import { SocketServer } from "./webSocket/webSocketService";
+import { SocketServer } from "./webSocket/SocketServer";
 
 export default class Application implements IApplication {
 
@@ -14,6 +15,7 @@ export default class Application implements IApplication {
     public httpServer: Server;
 
     constructor() {
+
         process.env.dirname = __dirname;
 
         this.Express = express();
@@ -23,9 +25,9 @@ export default class Application implements IApplication {
 
     public async StartAsync(): Promise<void> {
         this.Configure();
-
-        this.httpServer.listen(3333, () => {
-            console.log(`App running on ${3333}`);
+        
+        this.httpServer.listen(process.env.PORT || 3334, () => {
+            console.log(`App running on ${process.env.PORT || 3334}`);
         });
     }
 

@@ -5,6 +5,7 @@
   "author": "Gustavo Ferreira",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "reflect-metadata": "^0.1.13",
     "socket.io": "^4.5.4"

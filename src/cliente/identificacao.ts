@@ -1,8 +1,7 @@
-import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { SocketIO } from "../webSocket/SocketIO";
 import { clienteIdentificacao } from "./clienteIdentificacao";
 
 export interface identificacao {
-    client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+    socket: SocketIO;
     handshake: clienteIdentificacao;
 }

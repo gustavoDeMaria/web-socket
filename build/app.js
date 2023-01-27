@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require('dotenv');
 var express_1 = __importDefault(require("express"));
 var StatusController_1 = require("./controllers/StatusController");
 var ControllerBase_1 = require("./controllers/base/ControllerBase");
@@ -48,6 +49,8 @@ var IntegracaoController_1 = require("./controllers/IntegracaoController");
 var webSocketService_1 = require("./webSocket/webSocketService");
 var Application = /** @class */ (function () {
     function Application() {
+        var dotenv = require('dotenv');
+        dotenv.config();
         process.env.dirname = __dirname;
         this.Express = (0, express_1.default)();
         this.httpServer = (0, http_1.createServer)(this.Express);
@@ -56,8 +59,8 @@ var Application = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 this.Configure();
-                this.httpServer.listen(3333, function () {
-                    console.log("App running on ".concat(3333));
+                this.httpServer.listen(process.env.PORT || 3334, function () {
+                    console.log("App running on ".concat(process.env.PORT || 3334));
                 });
                 return [2 /*return*/];
             });
