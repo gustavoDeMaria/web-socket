@@ -442,7 +442,7 @@ model telefones_numeros {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model usuario {
-  oid              BigInt         @id    @default(autoincrement())     
+  oid              BigInt         @id @default(autoincrement())
   login            String?        @unique @db.Char(3)
   senha            String?        @db.Char(100)
   email            String?        @db.Char(100)
@@ -477,6 +477,4 @@ model usuario {
   depto_emprestado Int?
   altera_gt        String?        @db.Char(1)
   departamentos    departamentos? @relation(fields: [depto_id], references: [id], onUpdate: SetNull, map: "fkusuariodepartamentos")
-
-
 }
