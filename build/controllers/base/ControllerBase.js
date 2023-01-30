@@ -16,9 +16,6 @@ var ControllerBase = /** @class */ (function () {
         this.Response.status(200);
         this.Response.json(result);
     };
-    ControllerBase.prototype.End = function () {
-        this.Response.end();
-    };
     ControllerBase.prototype.Created = function () {
         this.Response.status(201);
         this.Response.end();
@@ -56,6 +53,14 @@ var ControllerBase = /** @class */ (function () {
             console.debug("appended : ", verb, "".concat(route).concat(action));
             application.Express[verb.toString().toLowerCase()]("".concat(route).concat(action), function (req, resp) {
                 var _a;
+                var midlewares = ControllerDecorators_1.default.GetMidlewares(empty).reverse();
+                midlewares.push.apply(midlewares, ControllerDecorators_1.default.GetBefores(empty, method.toString()).reverse());
+                if (midlewares) {
+                    for (var _i = 0, midlewares_1 = midlewares; _i < midlewares_1.length; _i++) {
+                        var method_1 = midlewares_1[_i];
+                        method_1(req);
+                    }
+                }
                 var args = ControllerDecorators_1.default.GetArgumentsHandler(empty, method.toString());
                 var params = [];
                 if (args) {

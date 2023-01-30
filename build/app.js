@@ -39,18 +39,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv');
+require("dotenv/config");
 var express_1 = __importDefault(require("express"));
 var StatusController_1 = require("./controllers/StatusController");
 var ControllerBase_1 = require("./controllers/base/ControllerBase");
 var http_1 = require("http");
 var DependecyService_1 = __importDefault(require("./dependencyInjection/DependecyService"));
 var IntegracaoController_1 = require("./controllers/IntegracaoController");
-var webSocketService_1 = require("./webSocket/webSocketService");
+var SocketServer_1 = require("./webSocket/SocketServer");
 var Application = /** @class */ (function () {
     function Application() {
-        var dotenv = require('dotenv');
-        dotenv.config();
         process.env.dirname = __dirname;
         this.Express = (0, express_1.default)();
         this.httpServer = (0, http_1.createServer)(this.Express);
@@ -68,8 +66,8 @@ var Application = /** @class */ (function () {
     };
     Application.prototype.Configure = function () {
         this.Express.use(express_1.default.json({ limit: 50 * 1024 * 1024 }));
-        var singleton = new webSocketService_1.SocketServer(this.httpServer);
-        DependecyService_1.default.Register(webSocketService_1.SocketServer, function () { return singleton; });
+        var singleton = new SocketServer_1.SocketServer(this.httpServer);
+        DependecyService_1.default.Register(SocketServer_1.SocketServer, function () { return singleton; });
         DependecyService_1.default.Register(IntegracaoController_1.IntegracaoController);
         DependecyService_1.default.Register(StatusController_1.StatusController);
         ControllerBase_1.ControllerBase.AppendController(IntegracaoController_1.IntegracaoController, this);

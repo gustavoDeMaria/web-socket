@@ -1,11 +1,11 @@
 import "dotenv/config";
 import express, { Express } from "express";
 import IApplication from "./interfaces/IApplication";
-import { StatusController } from "./controllers/StatusController";
+import { StatusController } from "./controllers/statusController";
 import { ControllerBase } from "./controllers/base/ControllerBase";
 import { Server, createServer } from "http";
 import DependecyService from "./dependencyInjection/DependecyService";
-import { IntegracaoController } from "./controllers/IntegracaoController";
+import { IntegracaoController } from "./controllers/integracaoController";
 import { SocketServer } from "./webSocket/SocketServer";
 
 export default class Application implements IApplication {

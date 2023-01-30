@@ -9,6 +9,30 @@ var ControllersDecorators = /** @class */ (function () {
             Reflect.defineMetadata(ControllersDecorators.RouteKeyMetadata, route, target);
         };
     };
+    ControllersDecorators.Use = function (midleware) {
+        return function (target) {
+            var _a;
+            var current = (_a = Reflect.getMetadata(ControllersDecorators.ControllerMidlewaresKeyMetadata, target)) !== null && _a !== void 0 ? _a : [];
+            current.push(midleware);
+            Reflect.defineMetadata(ControllersDecorators.ControllerMidlewaresKeyMetadata, current, target);
+        };
+    };
+    ControllersDecorators.GetMidlewares = function (controller) {
+        var _a;
+        return (_a = Reflect.getMetadata(ControllersDecorators.ControllerMidlewaresKeyMetadata, controller.constructor)) !== null && _a !== void 0 ? _a : [];
+    };
+    ControllersDecorators.Before = function (midleware) {
+        return function (target, methodName, propertyDescriptor) {
+            var _a;
+            var current = (_a = Reflect.getMetadata(ControllersDecorators.ActionsMidlewaresKeyMetadata, target, methodName)) !== null && _a !== void 0 ? _a : [];
+            current.push(midleware);
+            ControllersDecorators.SetMetaData(ControllersDecorators.ActionsMidlewaresKeyMetadata, target, methodName, current);
+        };
+    };
+    ControllersDecorators.GetBefores = function (controller, methodName) {
+        var _a;
+        return (_a = this.GetMetaData(ControllersDecorators.ActionsMidlewaresKeyMetadata, controller, methodName)) !== null && _a !== void 0 ? _a : [];
+    };
     ControllersDecorators.GetRoute = function (controller) {
         return Reflect.getMetadata(ControllersDecorators.RouteKeyMetadata, controller.constructor);
     };
@@ -73,6 +97,8 @@ var ControllersDecorators = /** @class */ (function () {
     ControllersDecorators.ActionVerbKeyMetadata = "meta:actionVerb";
     ControllersDecorators.ActionNameKeyMetadata = "meta:actionName";
     ControllersDecorators.ArgumentsHandlerKeyMetadata = "meta:argHandler";
+    ControllersDecorators.ControllerMidlewaresKeyMetadata = "meta:controllerMidlewaresKey";
+    ControllersDecorators.ActionsMidlewaresKeyMetadata = "meta:actionMidlewaresKey";
     return ControllersDecorators;
 }());
 exports.default = ControllersDecorators;

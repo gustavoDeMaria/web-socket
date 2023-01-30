@@ -26,7 +26,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatusController = void 0;
 var ControllerDecorators_1 = __importDefault(require("../decorators/controllers/ControllerDecorators"));
+var DependecyService_1 = __importDefault(require("../dependencyInjection/DependecyService"));
 var HttpVerbs_1 = require("../enums/httpVerbs/HttpVerbs");
+var Eventos_1 = require("../webSocket/enum/Eventos");
+var SocketServer_1 = require("../webSocket/SocketServer");
 var ControllerBase_1 = require("./base/ControllerBase");
 var StatusController = /** @class */ (function (_super) {
     __extends(StatusController, _super);
@@ -34,14 +37,18 @@ var StatusController = /** @class */ (function (_super) {
         return _super.call(this) || this;
     }
     StatusController.prototype.CheckStatus = function () {
+        var server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
+        server.socketServer.to("windows").emit(Eventos_1.Eventos.new_message, { from: "ADM", message: "Mensagem pra sala windows!!!" });
         this.OK({ status: "OK", date: new Date() });
     };
     __decorate([
+        ControllerDecorators_1.default.Before(function (s) { console.log('teste 02'); }),
         ControllerDecorators_1.default.Verb(HttpVerbs_1.HTTPVerbs.GET),
         ControllerDecorators_1.default.Action("/check")
     ], StatusController.prototype, "CheckStatus", null);
     StatusController = __decorate([
-        ControllerDecorators_1.default.Route("/status")
+        ControllerDecorators_1.default.Route("/status"),
+        ControllerDecorators_1.default.Use(function (s) { console.log('teste 01'); })
     ], StatusController);
     return StatusController;
 }(ControllerBase_1.ControllerBase));

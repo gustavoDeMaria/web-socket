@@ -17,11 +17,12 @@ export class SocketServer {
     }
 
     public adicionaClienteConectado(client: SocketIO, handshake: clienteIdentificacao) {
+        if (handshake && handshake.UsuarioIntranet)
         this.clientesConectados.push({ socket: client, handshake });
     }
 
     public removerClienteConectado(client: SocketIO) {
-        this.clientesConectados = this.clientesConectados.filter(identificacao => identificacao.socket.id === client.id);
+        this.clientesConectados = this.clientesConectados.filter(identificacao => identificacao.socket.id !== client.id);
     }
 
     public enviarMensagemTo<T>(clientId: string, evento: Eventos, msg: T): void {
@@ -29,7 +30,7 @@ export class SocketServer {
     }
 
     public enviarMensagem<T>(evento: Eventos, msg: T): void {
-        this.socketServer.emit(evento.toString(), msg);
+        this.socketServer.emit(evento.toString(), msg);        
     }
 
     public enviarMensagemExceptTo<T>(evento: Eventos, msg: T, ...ids: string[]): void {

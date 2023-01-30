@@ -1,0 +1,482 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model acomp {
+  acomp_id       Int       @default(autoincrement())
+  acomp_tarefa   BigInt?
+  acomp_datahora DateTime? @default(now()) @db.Timestamp(6)
+  acomp_usuario  String    @db.Char(3)
+  acomp_texto    String?
+  acomp_sac_os   Int?
+  acomp_sac_cli  Int?
+  acomp_superior Int?
+  acomp_cor      String?   @default("black") @db.VarChar(20)
+  acomp_log      String?   @db.VarChar(1)
+  acomp_topico   String?   @db.Char(1)
+  acomp_link     String?
+  tarefa         tarefa?   @relation(fields: [acomp_tarefa], references: [tarefa_id], onDelete: Cascade, map: "fkacomptarefa")
+
+  @@index([acomp_id], map: "indice_acomp_id")
+  @@index([acomp_superior], map: "indice_acomp_superior")
+  @@index([acomp_tarefa], map: "indice_acomp_tarefa")
+  @@index([acomp_tarefa, acomp_id, acomp_superior], map: "indice_subquery_acomps")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model acompsrecentes {
+  tarefa_id      BigInt?
+  tarefa_titulo  String?   @db.Char(100)
+  acomp_id       Int?
+  acomp_tarefa   BigInt?
+  acomp_datahora DateTime? @db.Timestamp(6)
+  acomp_usuario  String?   @db.Char(3)
+  acomp_texto    String?   @db.Char(255)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model alerta {
+  alerta_id      Int     @default(autoincrement())
+  alerta_tarefa  BigInt?
+  alerta_usuario String? @db.Char(3)
+  alerta_acomp   BigInt?
+  tarefa         tarefa? @relation(fields: [alerta_tarefa], references: [tarefa_id], onDelete: Cascade, map: "fkalertatarefa")
+
+  @@index([alerta_tarefa, alerta_usuario], map: "indice_query_acomps")
+  @@ignore
+}
+
+model apontamentos {
+  apont_id            Int       @default(autoincrement())
+  apont_ind_id        Int
+  apont_depto_id      Int
+  apont_dia           Int
+  apont_mes           Int
+  apont_ano           Int
+  apont_valor         Int?
+  apont_var1          Int?
+  apont_var2          Int?
+  apont_var3          Int?
+  apont_var4          Int?
+  apont_var5          Int?
+  apont_usuario       String?   @db.Char(3)
+  apont_data_cadastro DateTime? @db.Timestamp(6)
+  apont_var6          Int?
+  apont_valor_ws      Int?
+  apont_nc            String?   @db.Char(1)
+
+  @@id([apont_id, apont_depto_id, apont_dia, apont_mes, apont_ano])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model aux_tarefa {
+  aux_dono         String  @db.Char(3)
+  aux_executor     String  @db.Char(3)
+  aux_participante String? @db.Char(100)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model aux_workflow {
+  wor_dono         String  @db.Char(3)
+  wor_executor     String  @db.Char(3)
+  wor_participante String? @db.Char(100)
+  wor_passo        String? @db.Char(1)
+  wor_suporte      String? @db.Char(1)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model aviso {
+  aviso_id       Int       @default(autoincrement())
+  aviso_dequem   String?   @db.Char(3)
+  aviso_paraquem String?
+  aviso_quemleu  String?
+  aviso_texto    String?
+  aviso_data     DateTime? @db.Date
+  aviso_destacar String?   @default("S") @db.Char(1)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model aviso_aniversario {
+  anv_id   Int       @default(autoincrement())
+  anv_quem String?   @db.Char(3)
+  anv_data DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+model categorias {
+  id                Int
+  nome              String?
+  depto_id          Int
+  projeto_idpivotal Decimal?      @db.Decimal
+  usadificuldade    String?       @db.Char(1)
+  omite_relatorio   String?       @db.Char(1)
+  status            String?       @default("A") @db.VarChar(1)
+  departamentos     departamentos @relation(fields: [depto_id], references: [id], onDelete: Cascade, map: "fkcategoriasdepartamentos")
+
+  @@id([id, depto_id])
+}
+
+model checklists {
+  check_id       Decimal @id(map: "pk_check_id") @db.Decimal
+  check_titulo   String? @db.Char(100)
+  check_conteudo String?
+}
+
+model checklists_pedidos {
+  checkp_id            Decimal   @id(map: "pk_checkp_id") @db.Decimal
+  checkp_pedido        Decimal   @db.Decimal
+  checkp_data_cadastro DateTime? @db.Timestamp(6)
+  checkp_quem_cadastro String?   @db.VarChar(3)
+  checkp_data_conferiu DateTime? @db.Timestamp(6)
+  checkp_quem_conferiu String?   @db.VarChar(3)
+  checkp_data_alterado DateTime? @db.Timestamp(6)
+  checkp_quem_alterado String?   @db.VarChar(3)
+  checkp_conteudo      String?
+  pedido               pedido    @relation(fields: [checkp_pedido], references: [ped_id], onDelete: Cascade, onUpdate: NoAction, map: "checkp_pedidos")
+}
+
+model departamentos {
+  id         Int          @id
+  nome       String?
+  sigla      String?      @db.Char(3)
+  categorias categorias[]
+  usuario    usuario[]    @ignore
+}
+
+model estado_espirito {
+  es_id        Int     @id(map: "pk_estado_espirito_id")
+  es_descricao String?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model grupos {
+  grupo_id        Int       @default(autoincrement())
+  grupo_descricao String?
+  grupo_quem      String?
+  grupo_data      DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model holerites {
+  hol_id              Int       @default(autoincrement())
+  hol_login           String?
+  hol_data            DateTime? @db.Timestamp(6)
+  hol_login_dono      String?
+  hol_data_referencia DateTime? @db.Timestamp(6)
+  hol_observacao      String?
+  hol_login_alteracao String?
+  hol_data_alteracao  DateTime? @db.Timestamp(6)
+  hol_status          String?   @default("P") @db.Char(1)
+
+  @@ignore
+}
+
+model horaextra {
+  he_id             Int             @unique @default(autoincrement())
+  he_login          String?
+  he_data           DateTime?       @db.Timestamp(6)
+  he_login_resp     String?
+  he_observacao     String?
+  he_data_prevista  DateTime?       @db.Timestamp(6)
+  he_motivo         String?
+  he_observacao_rh  String?
+  he_total_75       String?
+  he_total_100      String?
+  he_login_concluiu String?
+  he_data_concluiu  DateTime?       @db.Timestamp(6)
+  he_status         String?         @db.Char(1)
+  horaextraitem     horaextraitem[] @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model horaextraitem {
+  hei_id         Int        @default(autoincrement())
+  hei_he_id      Int?
+  hei_data       DateTime?  @db.Date
+  hei_inicio     String?    @db.VarChar(5)
+  hei_final      String?    @db.VarChar(5)
+  hei_total      String?    @db.VarChar(8)
+  hei_75         String?    @db.VarChar(8)
+  hei_100        String?    @db.VarChar(8)
+  hei_observacao String?
+  hei_liberado   String?    @db.Char(1)
+  hei_forca_100  String?    @db.Char(1)
+  horaextra      horaextra? @relation(fields: [hei_he_id], references: [he_id], onDelete: Cascade, map: "horaextraitem")
+
+  @@ignore
+}
+
+model indicadores {
+  ind_id                 Int
+  ind_depto_id           Int
+  ind_nome               String   @db.VarChar(255)
+  ind_descricao          String?
+  ind_periodicidade      String?  @db.Char(1)
+  ind_meta_tipo          String?  @db.Char(1)
+  ind_meta_parametro     String?  @db.Char(1)
+  ind_meta_valor         Decimal? @db.Decimal
+  ind_formula            String?  @db.Char(1)
+  ind_inclui_totalizacao String?  @default("S") @db.Char(1)
+  ind_origem             String?  @db.Char(1)
+  ind_ws_categoria_id    Int?
+  ind_ws_item_id         Int?
+
+  @@id([ind_id, ind_depto_id])
+}
+
+model link {
+  link_serial Int     @unique(map: "cons_serial_unique") @default(autoincrement())
+  link_secao  BigInt?
+  link_id     Int?
+  link_desc   String? @db.Char(35)
+  link_link   String? @db.Char(150)
+  link_target String? @db.Char(1)
+  link_local  String? @db.Char(1)
+  secao       secao?  @relation(fields: [link_secao], references: [secao_serial], onDelete: NoAction, map: "fklinksecao")
+
+  @@unique([link_secao, link_id], map: "indlink")
+}
+
+model logsusuarios {
+  id               Int       @id @default(autoincrement())
+  login            String?
+  atividade        Int?
+  datahora         DateTime? @default(now()) @db.Timestamp(6)
+  idpivotal        String?
+  obs              String?
+  datahoraini      DateTime? @default(now()) @db.Timestamp(6)
+  dificuldade      Int?      @db.SmallInt
+  titulopivotal    String?
+  tipopivotal      String?   @db.VarChar(30)
+  statuspivotalini String?   @db.VarChar(30)
+  statuspivotalfim String?   @db.VarChar(30)
+  pontospivotal    String?   @db.VarChar(2)
+  depto_id         Decimal?  @db.Decimal
+}
+
+model pedido {
+  ped_id             Decimal              @id(map: "pk_ped_id") @db.Decimal
+  ped_id_proposta    Decimal?             @db.Decimal
+  ped_cod_proposta   String?              @db.Char(12)
+  ped_obs_dst        String?
+  ped_obs_adm        String?
+  ped_usuarios       String?
+  ped_brinde         String?
+  ped_inf_comp       String?
+  ped_senha_sac      String?              @db.Char(15)
+  ped_data_venda     DateTime?            @db.Date
+  ped_quem_venda     String?              @db.Char(5)
+  ped_data_adm       DateTime?            @db.Date
+  ped_quem_adm       String?              @db.Char(5)
+  ped_data_sup       DateTime?            @db.Date
+  ped_quem_sup       String?              @db.Char(5)
+  ped_checklist      Decimal?             @db.Decimal(3, 0)
+  ped_data_registro  DateTime?            @db.Date
+  ped_texto_proposta String?
+  ped_codclc         Decimal?             @db.Decimal
+  ped_data_adm2      DateTime?            @db.Date
+  ped_quem_adm2      String?              @db.Char(5)
+  ped_passo          Decimal?             @db.Decimal(1, 0)
+  ped_cliente        Decimal?             @db.Decimal
+  ped_texto_adendo   String?
+  ped_email_adm      String?              @db.Char(1)
+  ped_pref_workflow  String?
+  ped_bloq_itens     String?              @default("N") @db.Char(1)
+  checklists_pedidos checklists_pedidos[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model pedido_itens {
+  ped_item_id        Decimal  @db.Decimal
+  ped_item_ped_id    Decimal  @db.Decimal
+  ped_item_tipo      String?  @db.Char(50)
+  ped_item_descricao String?  @db.Char(100)
+  ped_item_licenca   String?  @db.Char(50)
+  ped_item_contrato  String?  @db.Char(50)
+  ped_item_qtd       String?  @db.VarChar(10)
+  ped_item_operacao  String?  @db.Char(50)
+  ped_item_adic      String?  @db.Char(3)
+  ped_item_valor     Decimal? @db.Decimal
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model pontos {
+  pt_id              Int       @default(autoincrement())
+  pt_login           String?
+  pt_data            DateTime? @db.Timestamp(6)
+  pt_login_dono      String?
+  pt_data_referencia DateTime? @db.Timestamp(6)
+  pt_observacao      String?
+  pt_status          String?   @db.Char(1)
+  pt_login_alteracao String?
+  pt_data_alteracao  DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+model ranking_uso {
+  ru_login     String
+  ru_categoria Decimal  @db.Decimal
+  ru_peso      Decimal? @db.Decimal
+
+  @@id([ru_login, ru_categoria])
+}
+
+model secao {
+  secao_serial BigInt  @unique @default(autoincrement())
+  secao_funcao String? @db.Char(6)
+  secao_id     Int?
+  secao_desc   String? @db.Char(100)
+  link         link[]
+
+  @@unique([secao_funcao, secao_id], map: "indsecao")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sigilo {
+  sigilo_id      Int     @default(autoincrement())
+  sigilo_tarefa  BigInt?
+  sigilo_usuario String? @db.Char(3)
+  sigilo_acomp   BigInt?
+
+  @@ignore
+}
+
+model tarefa {
+  tarefa_id             BigInt    @unique @default(autoincrement())
+  tarefa_datainicio     DateTime? @default(now()) @db.Date
+  tarefa_datafim        DateTime? @db.Date
+  tarefa_alteracao      DateTime? @db.Timestamp(6)
+  tarefa_dono           String    @db.Char(3)
+  tarefa_executor       String    @db.Char(3)
+  tarefa_participante   String?
+  tarefa_titulo         String    @db.Char(100)
+  tarefa_texto          String
+  tarefa_prioridade     String    @db.Char(1)
+  tarefa_previsao       DateTime? @db.Date
+  tarefa_cor_titulo     String?   @default("black") @db.VarChar(20)
+  tarefa_proposta       Decimal?  @db.Decimal
+  tarefa_cliente        String?   @db.VarChar(10)
+  tarefa_pri_contato    Decimal?  @db.Decimal(1, 0)
+  tarefa_cli_novo       String?   @db.Char(1)
+  tarefa_hab_contato    String?   @db.Char(1)
+  tarefa_paginacao      String?   @default("S") @db.Char(1)
+  tarefa_oculta_ped     String?   @db.Char(1)
+  tarefa_resp_ven       String?   @db.Char(3)
+  tarefa_tipo           String?   @db.Char(2)
+  tarefa_relacionada    String?   @db.VarChar(20)
+  tarefa_clc            String?   @db.VarChar(10)
+  tarefa_negrito_titulo String?   @db.Char(1)
+  tarefa_italico_titulo String?   @db.Char(1)
+  tarefa_pacto          String?   @default("N") @db.Char(1)
+  tarefa_pacto_qtd      Int?
+  tarefa_horaextra      BigInt?
+  acomp                 acomp[]   @ignore
+  alerta                alerta[]  @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model tarefa_grupo {
+  tagru_id     Int       @default(autoincrement())
+  tagru_grupo  BigInt?
+  tagru_tarefa BigInt?
+  tagru_login  String?
+  tagru_data   DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model tarefa_silenciar {
+  sil_id      Int       @default(autoincrement())
+  sil_usuario String?   @db.Char(3)
+  sil_tarefa  Decimal?  @db.Decimal
+  sil_data    DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model telefones {
+  tel_nome        String?   @db.VarChar(100)
+  tel_empresa     String?   @db.VarChar(100)
+  tel_obs         String?
+  tel_comentario  String?
+  tel_id          Decimal?  @db.Decimal
+  tel_last_update DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model telefones_numeros {
+  id_telid          Decimal? @db.Decimal
+  numero            String?  @db.VarChar(20)
+  tel_tipo          String?  @db.VarChar(1)
+  tel_operadora     String?
+  tel_ddd           String?
+  tel_numero_string String?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model usuario {
+  oid              BigInt         @id    @default(autoincrement())     
+  login            String?        @unique @db.Char(3)
+  senha            String?        @db.Char(100)
+  email            String?        @db.Char(100)
+  funcao           String?        @db.Char(6)
+  indexop          Int?           @db.SmallInt
+  nome             String?
+  home             String?
+  ferias_ini       DateTime?      @db.Date
+  ferias_fim       DateTime?      @db.Date
+  ferias_redirect  String?        @db.VarChar(3)
+  ferias_email     String?
+  sac_func         Int?
+  especial         String?        @db.Char(1)
+  pref_busca       String?        @db.Char(1)
+  usagt            String?        @db.Char(1)
+  depto_id         Int?
+  api_token        String?
+  cat_id           Int?
+  sigla_pivotal    String?        @db.Char(3)
+  gestor           String?        @db.Char(1)
+  ramal            Int?
+  formacao         String?
+  estado_espirito  Int?
+  status           String?        @db.Char(1)
+  retorno_ferias   DateTime?      @db.Date
+  adm              String?        @db.Char(1)
+  super_adm        String?        @db.Char(1)
+  aniversario      String?
+  indexoptipo      String?        @default("ASC") @db.VarChar(5)
+  admissao         String?
+  tipo_atalho      String?        @default("T") @db.Char(1)
+  depto_emprestado Int?
+  altera_gt        String?        @db.Char(1)
+  departamentos    departamentos? @relation(fields: [depto_id], references: [id], onUpdate: SetNull, map: "fkusuariodepartamentos")
+
+
+}

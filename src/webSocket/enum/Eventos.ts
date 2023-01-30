@@ -6,5 +6,8 @@ export enum Eventos {
     handshake = 'handshake',
     new_registration_requested = "new-registration-requested",
     new_message = "new-message",
-    status_changed = "status-changed"
+    status_changed = "status-changed",
+    user_online_request = "user-online-request",
+    user_online_response = "user-online-response",
+    message_received = "message-received"
 }

@@ -5,6 +5,7 @@ import DependecyService from '../../dependencyInjection/DependecyService';
 import IApplication from "../../interfaces/IApplication";
 import { HTTPVerbs } from "../../enums/httpVerbs/HttpVerbs";
 import IMidleware from "../../midlewares/IMidleware";
+import CD from "../../decorators/controllers/ControllerDecorators";
 
 export class ControllerBase implements IController
 {

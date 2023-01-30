@@ -65,7 +65,7 @@ var ControllerDecorators_1 = __importDefault(require("../decorators/controllers/
 var DependecyService_1 = __importDefault(require("../dependencyInjection/DependecyService"));
 var HttpVerbs_1 = require("../enums/httpVerbs/HttpVerbs");
 var Eventos_1 = require("../webSocket/enum/Eventos");
-var webSocketService_1 = require("../webSocket/webSocketService");
+var SocketServer_1 = require("../webSocket/SocketServer");
 var ControllerBase_1 = require("./base/ControllerBase");
 var IntegracaoController = /** @class */ (function (_super) {
     __extends(IntegracaoController, _super);
@@ -78,14 +78,14 @@ var IntegracaoController = /** @class */ (function (_super) {
             var server, story, novosValores, cliente;
             return __generator(this, function (_b) {
                 try {
-                    server = DependecyService_1.default.Resolve(webSocketService_1.SocketServer);
+                    server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
                     story = this.Request.body;
                     if (story) {
                         novosValores = this.obtemNovosValoresSeAlterado(story);
                         if (novosValores) {
                             cliente = server.obterSocketClient(story.performed_by.initials);
                             if (cliente) {
-                                server.enviarMensagem(cliente.id, Eventos_1.Eventos.new_registration_requested, { Guide: cliente === null || cliente === void 0 ? void 0 : cliente.id, UltimoPivotal: (_a = story.primary_resources[0]) === null || _a === void 0 ? void 0 : _a.id });
+                                server.enviarMensagemTo(cliente.id, Eventos_1.Eventos.new_registration_requested, { Guide: cliente === null || cliente === void 0 ? void 0 : cliente.id, UltimoPivotal: (_a = story.primary_resources[0]) === null || _a === void 0 ? void 0 : _a.id });
                             }
                         }
                     }
