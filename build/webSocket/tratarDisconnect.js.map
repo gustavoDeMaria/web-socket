@@ -1,1 +1,0 @@
-{"version":3,"file":"tratarDisconnect.js","sourceRoot":"","sources":["../../src/webSocket/tratarDisconnect.ts"],"names":[],"mappings":";;;AAGA,SAAgB,gBAAgB,CAAC,MAAoB,EAAE,MAAgB;IACnE,MAAM,CAAC,uBAAuB,CAAC,MAAM,CAAC,CAAC;IACvC,OAAO,CAAC,GAAG,CAAC,gBAAgB,EAAE,MAAM,CAAC,EAAE,CAAC,CAAC;AAC7C,CAAC;AAHD,4CAGC"}
