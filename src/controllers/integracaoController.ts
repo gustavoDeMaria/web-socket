@@ -112,7 +112,7 @@ export class IntegracaoController extends ControllerBase {
         }
     }
 
-    async apontarGT(server: SocketServer, pivotal: IPivotalStory, cq: boolean = true) {
+    async apontarGT(server: SocketServer, pivotal: IPivotalStory, cq: boolean = false) {
 
         try {
             //obtem usuario
