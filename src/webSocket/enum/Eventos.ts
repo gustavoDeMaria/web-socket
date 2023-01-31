@@ -9,5 +9,7 @@ export enum Eventos {
     status_changed = "status-changed",
     user_online_request = "user-online-request",
     user_online_response = "user-online-response",
-    message_received = "message-received"
+    message_received = "message-received",
+    categoria_request = "categoria-request",
+    categoria_response = "categoria-response"
 }

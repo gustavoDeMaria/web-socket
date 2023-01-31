@@ -6,7 +6,8 @@ import { SocketServer } from "../SocketServer";
 import { tratarUserOnline } from "./tratarUserOnline";
 import { Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { SocketIO } from "../SocketIO";
+import { tratarMessageReceived } from "./tratarMessageReceived";
+import { tratarCategoriaRequest } from "./tratarCategoriaRequest";
 
 export function tratarEventosWebSockets(server: SocketServer) {
     server.socketServer.on(Eventos.connection, (client) => {
@@ -15,6 +16,7 @@ export function tratarEventosWebSockets(server: SocketServer) {
         client.on(Eventos.new_message, tratarNewMessage(server, client));
         client.on(Eventos.user_online_request, tratarUserOnline(server, client));
         client.on(Eventos.message_received, tratarMessageReceived(server, client));
+        client.on(Eventos.categoria_request, tratarCategoriaRequest(server, client));
 
         client.join("windows");
     });
@@ -22,10 +24,4 @@ export function tratarEventosWebSockets(server: SocketServer) {
     server.socketServer.socketsJoin("windows");
 }
 
-function tratarMessageReceived(server: SocketServer, client: SocketIO): (...args: any[]) => void {
-    return () => {
-        const user = server.obterClient(client.id)?.UsuarioIntranet;
-        console.log(`${user} recebeu a mensagem!`);
-    };
-}
 
