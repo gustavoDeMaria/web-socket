@@ -119,17 +119,14 @@ export class IntegracaoController extends ControllerBase {
             const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
             if (usuarioIntranet && usuarioIntranet.depto_id) {
                 //obtem categoria
-                const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal,
-                    usuarioIntranet.depto_id);
-
-                    console.log("categorias", categorias);
+                const categorias = cq? undefined 
+                                        : await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal,
+                                                                                            usuarioIntranet.depto_id);
 
                 if (categorias && categorias.length > 0) {
 
                     const categoriasFiltradas = cq ? categorias.find(cat => cat.nome?.indexOf("Teste") !== -1)
                         : categorias.find(cat => cat.nome?.indexOf("Teste") === -1);
-
-                    console.log("categoriasFiltradas", cq, categoriasFiltradas);
 
                     if (usuarioIntranet && categoriasFiltradas) {
 
