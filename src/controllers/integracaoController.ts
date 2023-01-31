@@ -106,9 +106,10 @@ export class IntegracaoController extends ControllerBase {
         try {
             //obtem usuario
             const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
-            if (usuarioIntranet) {
+            if (usuarioIntranet && usuarioIntranet.depto_id) {
                 //obtem categoria
-                const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal, usuarioIntranet?.depto_id);
+                const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal,
+                                         usuarioIntranet.depto_id);
 
                 if (categorias && categorias.length > 0) {
 
