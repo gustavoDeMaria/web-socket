@@ -114,6 +114,9 @@ export class IntegracaoController extends ControllerBase {
                 
                 const categoriasFiltradas = categorias.find(cat=> cat.nome?.indexOf("Teste") == -1)
 
+                console.log("categorias", categorias);
+                console.log("categoriasFiltradas", categoriasFiltradas);
+
                 if (usuarioIntranet && categoriasFiltradas) {
 
                     const login = usuarioIntranet.login ?? "";
