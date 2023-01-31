@@ -36,21 +36,21 @@ var StatusController = /** @class */ (function (_super) {
     function StatusController() {
         return _super.call(this) || this;
     }
+    //@CD.Before(s => { console.log('teste 02'); })
     StatusController.prototype.CheckStatus = function () {
         var server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
-        server.socketServer.to("windows").emit(Eventos_1.Eventos.new_message, { from: "ADM", message: "Mensagem pra sala windows!!!" });
+        server.socketServer.to("windows").emit(Eventos_1.Eventos.new_message, { from: "ADM", message: { to: null, content: "Mensagem pra sala windows!!!", type: "text", from: "ADM" } });
         this.OK({ status: "OK", date: new Date() });
     };
     __decorate([
-        ControllerDecorators_1.default.Before(function (s) { console.log('teste 02'); }),
         ControllerDecorators_1.default.Verb(HttpVerbs_1.HTTPVerbs.GET),
         ControllerDecorators_1.default.Action("/check")
     ], StatusController.prototype, "CheckStatus", null);
     StatusController = __decorate([
-        ControllerDecorators_1.default.Route("/status"),
-        ControllerDecorators_1.default.Use(function (s) { console.log('teste 01'); })
+        ControllerDecorators_1.default.Route("/status")
+        //@CD.Use(s => { console.log('teste 01'); })
     ], StatusController);
     return StatusController;
 }(ControllerBase_1.ControllerBase));
 exports.StatusController = StatusController;
-//# sourceMappingURL=StatusController.js.map
+//# sourceMappingURL=statusController.js.map

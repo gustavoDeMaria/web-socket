@@ -20,8 +20,6 @@ export class StatusController extends ControllerBase {
     public CheckStatus(): void {
         const server = DependecyService.Resolve<SocketServer>(SocketServer);
             
-        server.socketServer.to("windows").emit(Eventos.new_message, { from: "ADM", message: { to: null, content: "Mensagem pra sala windows!!!", type: "text", from: "ADM" } })
-        
         this.OK({ status: "OK", date: new Date() });
     }
 

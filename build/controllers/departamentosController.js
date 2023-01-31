@@ -35,45 +35,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv/config");
-var express_1 = __importDefault(require("express"));
-var statusController_1 = require("./controllers/statusController");
-var ControllerBase_1 = require("./controllers/base/ControllerBase");
-var http_1 = require("http");
-var DependecyService_1 = __importDefault(require("./dependencyInjection/DependecyService"));
-var integracaoController_1 = require("./controllers/integracaoController");
-var SocketServer_1 = require("./webSocket/SocketServer");
-var Application = /** @class */ (function () {
-    function Application() {
-        process.env.dirname = __dirname;
-        this.Express = (0, express_1.default)();
-        this.httpServer = (0, http_1.createServer)(this.Express);
+exports.DepartamentosController = void 0;
+var departamentoIntranet_1 = require("../services/departamentoIntranet");
+var DepartamentosController = /** @class */ (function () {
+    function DepartamentosController() {
+        this.departamentoService = new departamentoIntranet_1.departamentosIntranet();
     }
-    Application.prototype.StartAsync = function () {
+    DepartamentosController.prototype.obterPorID = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                this.Configure();
-                this.httpServer.listen(process.env.PORT || 3334, function () {
-                    console.log("App running on ".concat(process.env.PORT || 3334));
-                });
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.departamentoService.obterPorID(id)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
             });
         });
     };
-    Application.prototype.Configure = function () {
-        this.Express.use(express_1.default.json({ limit: 50 * 1024 * 1024 }));
-        var singleton = new SocketServer_1.SocketServer(this.httpServer);
-        DependecyService_1.default.Register(SocketServer_1.SocketServer, function () { return singleton; });
-        DependecyService_1.default.Register(integracaoController_1.IntegracaoController);
-        DependecyService_1.default.Register(statusController_1.StatusController);
-        ControllerBase_1.ControllerBase.AppendController(integracaoController_1.IntegracaoController, this);
-        ControllerBase_1.ControllerBase.AppendController(statusController_1.StatusController, this);
+    DepartamentosController.prototype.obterTodos = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.departamentoService.obterTodos()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
     };
-    return Application;
+    return DepartamentosController;
 }());
-exports.default = Application;
-//# sourceMappingURL=app.js.map
+exports.DepartamentosController = DepartamentosController;
+//# sourceMappingURL=departamentosController.js.map

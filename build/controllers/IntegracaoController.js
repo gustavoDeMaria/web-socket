@@ -78,6 +78,8 @@ var IntegracaoController = /** @class */ (function (_super) {
             var server, story, novosValores, cliente;
             return __generator(this, function (_b) {
                 try {
+                    console.log("BODY: ", this.Request.body);
+                    this.OK("Gerado com sucesso!");
                     server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
                     story = this.Request.body;
                     if (story) {
@@ -118,4 +120,4 @@ var IntegracaoController = /** @class */ (function (_super) {
     return IntegracaoController;
 }(ControllerBase_1.ControllerBase));
 exports.IntegracaoController = IntegracaoController;
-//# sourceMappingURL=IntegracaoController.js.map
+//# sourceMappingURL=integracaoController.js.map

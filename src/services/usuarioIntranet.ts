@@ -1,11 +1,11 @@
 import { usuario } from '@prisma/client';
+import { prismaClient } from '../database/prismaPg';
 import { Icrud } from './interface/Icrud';
-import { prisma } from './apontamentoGT';
 
 export class usuarioIntranet implements Icrud<usuario>
 {
     async criar(data: usuario): Promise<usuario> {
-        return await prisma.usuario.create({
+        return await prismaClient.usuario.create({
             data: {
                 ...data,
             }
@@ -13,7 +13,7 @@ export class usuarioIntranet implements Icrud<usuario>
     }
 
     async atualizar(data: usuario): Promise<usuario> {
-        return await prisma.usuario.update({
+        return await prismaClient.usuario.update({
             where: { oid: data.oid }, data: {
                 ...data
             }
@@ -21,26 +21,27 @@ export class usuarioIntranet implements Icrud<usuario>
     }
 
     async obterPorID(oid: number): Promise<usuario | null> {
-        return await prisma.usuario.findUnique({
+        return await prismaClient.usuario.findUnique({
             where: { oid }
             //, include: { permissoes_perfil: { include: { permissao: true } } }
         });
     }
 
-    async obterPorLogin(login: string): Promise<usuario[] | null> {
-        return await prisma.usuario.findMany({         
-            where: { login }            
+    async obterPorLogin(login: string) {
+        return await prismaClient.usuario.findFirst({
+            where: {
+                sigla_pivotal: login
+            }
         });
     }
 
     async obterTodos(): Promise<usuario[]> {
-        return await prisma.usuario.findMany({
-             
+        return await prismaClient.usuario.findMany({
+
         });
     }
 
     async excluirPorID(id: number): Promise<usuario | null> {
-        return await prisma.usuario.delete({ where: { oid: id } });
+        return await prismaClient.usuario.delete({ where: { oid: id } });
     }
-
 }

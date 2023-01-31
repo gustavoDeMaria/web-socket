@@ -8,6 +8,8 @@ import DependecyService from "./dependencyInjection/DependecyService";
 import { IntegracaoController } from "./controllers/integracaoController";
 import { SocketServer } from "./webSocket/SocketServer";
 
+import fs from 'fs';
+
 export default class Application implements IApplication {
 
     public Express: Express;

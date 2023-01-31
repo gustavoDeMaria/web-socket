@@ -1,12 +1,13 @@
 import { categorias } from '@prisma/client';
+import { prismaClient } from '../database/prismaPg';
 import { Icrud } from './interface/Icrud';
-import { prisma } from './apontamentoGT';
 
 
-export class categoriasIntranet implements Icrud<categorias>
+
+export class CategoriasIntranet
 {
     async criar(data: categorias): Promise<categorias> {
-        return await prisma.categorias.create({
+        return await prismaClient.categorias.create({
             data: {
                 ...data,
             }
@@ -18,33 +19,51 @@ export class categoriasIntranet implements Icrud<categorias>
         const id = data.id;
         const depto_id = data.depto_id;
 
-        return await prisma.categorias.update({
+        return await prismaClient.categorias.update({
             where: { id_depto_id: { id, depto_id }}, data: {
                 ...data
             }
         });
     }
 
-    async obterPorID(id: any, depto_id: any): Promise<categorias | null> {
-        return await prisma.categorias.findUnique({
-            where: { id_depto_id: { id, depto_id }}
-            //, include: { permissoes_perfil: { include: { permissao: true } } }
+    async obterPorID(id: number, depto_id: number) {
+      try {
+        return await prismaClient.categorias.findUniqueOrThrow({
+            where: { id_depto_id: { id, depto_id }},
+            select: { departamentos: false, depto_id: true, projeto_idpivotal:true }
+                   
         });
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
     }
 
     async obterPorDepartamento(depto_id: any): Promise<categorias[] | null> {
-        return await prisma.categorias.findMany({
+        return await prismaClient.categorias.findMany({
             where: { depto_id }
         });
     }
+
+    async obterPorProjetoPivotal(projeto_idpivotal: number): Promise<categorias[] | null> {
+       try {
+        return await prismaClient.categorias.findMany({
+            where: { projeto_idpivotal }
+        });
+       } catch (error) {
+        console.error(error);
+        return null;
+       }
+    }
+
     async obterTodos(): Promise<categorias[]> {
-        return await prisma.categorias.findMany({
+        return await prismaClient.categorias.findMany({
             // include: { permissoes_perfil: { include: { permissao: true } } },
         });
     }
 
     async excluirPorID(id: number, depto_id :number): Promise<categorias | null> {
-        return await prisma.categorias.delete({  where: { id_depto_id: { id, depto_id }} });
+        return await prismaClient.categorias.delete({  where: { id_depto_id: { id, depto_id }} });
     }
 
 }

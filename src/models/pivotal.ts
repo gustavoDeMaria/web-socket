@@ -26,6 +26,7 @@
 
     export interface IChange {
         story_type: string;
+        story_priority: string;
         name: string;
         new_values: INewValues;
         original_values: IOriginalValues;

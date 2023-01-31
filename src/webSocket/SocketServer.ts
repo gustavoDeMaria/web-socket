@@ -47,6 +47,10 @@ export class SocketServer {
         return this.clientesConectados.find(sc => sc.handshake?.UsuarioIntranet === iniciais)?.socket;
      } 
 
+     public obterUsuarioIntranet(iniciaisPivotal: string) : string | undefined {
+        return this.clientesConectados.find(sc => sc.handshake?.UsuarioPivotal === iniciaisPivotal)?.handshake.UsuarioIntranet;
+     } 
+
      public obterClient(socketId: string) : clienteIdentificacao | undefined {
         return this.clientesConectados.find(sc => sc.socket.id === socketId)?.handshake;
      } 

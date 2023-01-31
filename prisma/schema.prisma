@@ -123,9 +123,9 @@ model categorias {
   id                Int
   nome              String?
   depto_id          Int
-  projeto_idpivotal Decimal?      @db.Decimal
-  usadificuldade    String?       @db.Char(1)
-  omite_relatorio   String?       @db.Char(1)
+  projeto_idpivotal Int?      
+  usadificuldade    String?       
+  omite_relatorio   String?       
   status            String?       @default("A") @db.VarChar(1)
   departamentos     departamentos @relation(fields: [depto_id], references: [id], onDelete: Cascade, map: "fkcategoriasdepartamentos")
 
@@ -259,17 +259,17 @@ model logsusuarios {
   id               Int       @id @default(autoincrement())
   login            String?
   atividade        Int?
-  datahora         DateTime? @default(now()) @db.Timestamp(6)
+  datahora         DateTime? @default(now())
   idpivotal        String?
   obs              String?
-  datahoraini      DateTime? @default(now()) @db.Timestamp(6)
+  datahoraini      DateTime? @default(now()) 
   dificuldade      Int?      @db.SmallInt
   titulopivotal    String?
   tipopivotal      String?   @db.VarChar(30)
   statuspivotalini String?   @db.VarChar(30)
   statuspivotalfim String?   @db.VarChar(30)
   pontospivotal    String?   @db.VarChar(2)
-  depto_id         Decimal?  @db.Decimal
+  depto_id         Int?  @db.SmallInt
 }
 
 model pedido {

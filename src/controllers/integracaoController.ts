@@ -1,10 +1,21 @@
 import CD from "../decorators/controllers/ControllerDecorators";
 import DependecyService from "../dependencyInjection/DependecyService";
 import { HTTPVerbs } from "../enums/httpVerbs/HttpVerbs";
-import { INewValues, IStoryAlterated } from "../models/pivotal";
-import { Eventos } from "../webSocket/enum/Eventos";
+import { IStoryAlterated } from "../models/pivotal";
 import { SocketServer } from "../webSocket/SocketServer";
 import { ControllerBase } from "./base/ControllerBase";
+import { apontamentosGT as ApontamentosGT } from "../services/apontamentoGT";
+import { usuarioIntranet as UsuarioIntranet } from "../services/usuarioIntranet";
+import { CategoriasIntranet } from "../services/categoriasIntranet";
+import { DateTime } from "./DateTime";
+import { IPivotalStory } from "./Interface/IPivotalStory";
+import { PivotalService } from "../services/pivotalService";
+
+
+const apontamento = new ApontamentosGT();
+const apontamentoDaIntranet = new UsuarioIntranet();
+const categoriasIntranet = new CategoriasIntranet();
+const pivotalService = new PivotalService();
 
 @CD.Route("/integracao")
 export class IntegracaoController extends ControllerBase {
@@ -18,18 +29,11 @@ export class IntegracaoController extends ControllerBase {
 
             const story = this.Request.body as IStoryAlterated;
 
+            //console.log("BODY: ", story);
+
             if (story) {
 
-                const novosValores = this.obtemNovosValoresSeAlterado(story);
-
-                if (novosValores) {
-
-                    const cliente = server.obterSocketClient(story.performed_by.initials);
-
-                    if (cliente) {
-                        server.enviarMensagemTo(cliente.id, Eventos.new_registration_requested, { Guide: cliente?.id, UltimoPivotal: story.primary_resources[0]?.id });
-                    }
-                }
+                await this.tratarAlteracaoStory(server, story);
             }
 
             this.OK("Gerado com sucesso!");
@@ -40,16 +44,139 @@ export class IntegracaoController extends ControllerBase {
         }
     }
 
-    obtemNovosValoresSeAlterado(story: IStoryAlterated): INewValues | undefined {
-        if (story && story.changes.filter(modificacao => modificacao.original_values.current_state !== modificacao.new_values.current_state)) {
-            story.changes.forEach(modificacao => {
-                if (modificacao.new_values.current_state === "delivered") {
-    
-                    return modificacao.new_values;
+    async tratarAlteracaoStory(server: SocketServer, story: IStoryAlterated) {
+
+        if (story && story.changes
+            .filter(modificacao => modificacao.original_values.current_state
+                !== modificacao.new_values.current_state)) {
+            story.changes.forEach(async modificacao => {
+                if (modificacao.new_values) {
+
+                    const detalhesStory = this.ObterDadosPivotal(story);
+
+                    if (detalhesStory) {
+                        switch (modificacao.new_values.current_state) {
+                            case "finished":
+                                console.log(`APONTAR FINALIZAÇÃO DE TAREFA ${story.primary_resources.find(s => s.kind === "story")?.id} PARA ${story.performed_by.name} (${story.performed_by.initials})`);
+                                //await this.apontarGT(server, detalhesStory);
+                                break;
+
+                            case "started":
+                                console.log(`APONTAR INÍCIO DE TAREFA ${story.primary_resources.find(s => s.kind === "story")?.id} PARA ${story.performed_by.name} (${story.performed_by.initials})`);
+                                await this.apontarGT(server, detalhesStory);
+                                break;
+                        }
+                    }
+
+                    //const cliente = server.obterSocketClient(story.performed_by.initials);
+
+                    //if (cliente) {
+                    //    server.enviarMensagemTo(cliente.id, Eventos.new_registration_requested, { Guide: cliente?.id, UltimoPivotal: story.primary_resources[0]?.id });
+                    //}
+
                 }
             });
         }
-    
-        return undefined;
+    }
+
+    ObterDadosPivotal(story: IStoryAlterated): IPivotalStory | null {
+        const detalhes = story.primary_resources.find(piv => piv.kind === 'story');
+        const alteracaoes = story.changes.find(piv => piv.kind === 'story');
+
+        if (detalhes && alteracaoes) {
+
+            return {
+                titulopivotal: detalhes.name,
+                tipopivotal: detalhes.story_type,
+                statuspivotalini: alteracaoes?.new_values.current_state ?? "",
+                statuspivotalfim: "",
+                pontospivotal: alteracaoes?.story_priority.substring(1, 1) ?? "",
+                projetopivotal: story.project.id,
+                storyId: detalhes.id.toString(),
+                usuario: story.performed_by.initials
+            };
+        }
+        else {
+            return null;
+        }
+    }
+
+    async apontarGT(server: SocketServer, pivotal: IPivotalStory) {
+
+        try {
+            //obtem usuario
+            const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
+
+            //obtem categoria
+            const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal);
+
+            if (usuarioIntranet && categorias && categorias.length > 0) {
+
+                const login = usuarioIntranet.login ?? "";
+
+                // finaliza última tarefa
+                const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
+
+               if (!ultima || ultima.idpivotal?.replace("#","") !== pivotal.storyId){
+                 //realiza apontamento
+                 await apontamento.criar({
+                    id: 0,
+                    login: login,
+                    atividade: categorias[0].id,
+                    datahora: DateTime.Now(),
+                    obs: null,
+                    datahoraini: DateTime.Now(),
+                    dificuldade: null,
+                    titulopivotal: pivotal.titulopivotal,
+                    tipopivotal: pivotal.tipopivotal,
+                    statuspivotalini: pivotal.statuspivotalini,
+                    statuspivotalfim: pivotal.statuspivotalfim,
+                    pontospivotal: pivotal.pontospivotal,
+                    depto_id: categorias[0].depto_id,
+                    idpivotal: "#" + pivotal.storyId
+                });
+               }
+                //nofica socket
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
+    async finalizarApontamentoGT(server: SocketServer, pivotal: IPivotalStory, api_token: string | null) {
+
+        try {
+            //obtem usuario
+            const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
+
+            if (usuarioIntranet && usuarioIntranet.login) {
+
+                // finaliza última tarefa
+                const ultima = await apontamento.obterUltimoApontamento(usuarioIntranet.login)
+
+                if (ultima &&  ultima.idpivotal) {
+
+                    if (ultima.idpivotal && ultima.atividade && ultima.depto_id) {
+
+                        const categoria = await categoriasIntranet.obterPorID(ultima.atividade, ultima.depto_id);
+
+                        if (categoria && categoria.projeto_idpivotal && api_token) {
+                            const pivotalStatus = await pivotalService.ObterStory(categoria.projeto_idpivotal,
+                                ultima.idpivotal, api_token);
+
+                            if (pivotalStatus) {
+                                ultima.statuspivotalfim = pivotalStatus.current_state;
+                                await apontamento.atualizar(ultima);
+                                return ultima;
+                            }
+                        }
+                    }
+                }
+                //nofica socket
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
