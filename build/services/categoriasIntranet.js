@@ -47,16 +47,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.categoriasIntranet = void 0;
-var apontamentoGT_1 = require("./apontamentoGT");
-var categoriasIntranet = /** @class */ (function () {
-    function categoriasIntranet() {
+exports.CategoriasIntranet = void 0;
+var prismaPg_1 = require("../database/prismaPg");
+var CategoriasIntranet = /** @class */ (function () {
+    function CategoriasIntranet() {
     }
-    categoriasIntranet.prototype.criar = function (data) {
+    CategoriasIntranet.prototype.criar = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.categorias.create({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.categorias.create({
                             data: __assign({}, data)
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -64,7 +64,7 @@ var categoriasIntranet = /** @class */ (function () {
             });
         });
     };
-    categoriasIntranet.prototype.atualizar = function (data) {
+    CategoriasIntranet.prototype.atualizar = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var id, depto_id;
             return __generator(this, function (_a) {
@@ -72,7 +72,7 @@ var categoriasIntranet = /** @class */ (function () {
                     case 0:
                         id = data.id;
                         depto_id = data.depto_id;
-                        return [4 /*yield*/, apontamentoGT_1.prisma.categorias.update({
+                        return [4 /*yield*/, prismaPg_1.prismaClient.categorias.update({
                                 where: { id_depto_id: { id: id, depto_id: depto_id } }, data: __assign({}, data)
                             })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -80,24 +80,32 @@ var categoriasIntranet = /** @class */ (function () {
             });
         });
     };
-    categoriasIntranet.prototype.obterPorID = function (id, depto_id) {
+    CategoriasIntranet.prototype.obterPorID = function (id, depto_id) {
         return __awaiter(this, void 0, void 0, function () {
+            var error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.categorias.findUnique({
-                            where: { id_depto_id: { id: id, depto_id: depto_id } }
-                            //, include: { permissoes_perfil: { include: { permissao: true } } }
-                        })];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, prismaPg_1.prismaClient.categorias.findUniqueOrThrow({
+                                where: { id_depto_id: { id: id, depto_id: depto_id } },
+                                select: { departamentos: false, depto_id: true, projeto_idpivotal: true }
+                            })];
                     case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    categoriasIntranet.prototype.obterPorDepartamento = function (depto_id) {
+    CategoriasIntranet.prototype.obterPorDepartamento = function (depto_id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.categorias.findMany({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.categorias.findMany({
                             where: { depto_id: depto_id }
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -105,11 +113,31 @@ var categoriasIntranet = /** @class */ (function () {
             });
         });
     };
-    categoriasIntranet.prototype.obterTodos = function () {
+    CategoriasIntranet.prototype.obterPorProjetoPivotal = function (projeto_idpivotal) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, prismaPg_1.prismaClient.categorias.findMany({
+                                where: { projeto_idpivotal: projeto_idpivotal }
+                            })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_2 = _a.sent();
+                        console.error(error_2);
+                        return [2 /*return*/, null];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CategoriasIntranet.prototype.obterTodos = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.categorias.findMany({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.categorias.findMany({
                         // include: { permissoes_perfil: { include: { permissao: true } } },
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -117,17 +145,17 @@ var categoriasIntranet = /** @class */ (function () {
             });
         });
     };
-    categoriasIntranet.prototype.excluirPorID = function (id, depto_id) {
+    CategoriasIntranet.prototype.excluirPorID = function (id, depto_id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.categorias.delete({ where: { id_depto_id: { id: id, depto_id: depto_id } } })];
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.categorias.delete({ where: { id_depto_id: { id: id, depto_id: depto_id } } })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    return categoriasIntranet;
+    return CategoriasIntranet;
 }());
-exports.categoriasIntranet = categoriasIntranet;
+exports.CategoriasIntranet = CategoriasIntranet;
 //# sourceMappingURL=categoriasIntranet.js.map

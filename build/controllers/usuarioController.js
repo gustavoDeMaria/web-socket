@@ -94,14 +94,13 @@ var UsuarioController = /** @class */ (function () {
     };
     UsuarioController.prototype.ValidarSenha = function (login, senha) {
         return __awaiter(this, void 0, void 0, function () {
-            var usuarios, usuario, senhaBdIntranetStr, senhaMd5;
+            var usuario, senhaBdIntranetStr, senhaMd5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.ConsultarUsuarioLogin(login)];
                     case 1:
-                        usuarios = _a.sent();
-                        if (usuarios && usuarios.length > 0) {
-                            usuario = usuarios[0];
+                        usuario = _a.sent();
+                        if (usuario) {
                             if (usuario.senha) {
                                 senhaBdIntranetStr = Buffer.from(usuario.senha, 'base64').toString('binary');
                                 senhaMd5 = crypto.createHash('md5').update(senhaBdIntranetStr).digest("hex");

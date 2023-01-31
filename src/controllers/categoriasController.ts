@@ -1,8 +1,8 @@
-import { categoriasIntranet } from "../services/categoriasIntranet";
+import { CategoriasIntranet } from "../services/categoriasIntranet";
 
 
 export class CategoriasController {
-    private categoriasService = new categoriasIntranet();
+    private categoriasService = new CategoriasIntranet();
 
     constructor() { }
 

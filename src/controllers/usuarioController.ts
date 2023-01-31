@@ -21,10 +21,9 @@ export class UsuarioController
 
     private async ValidarSenha(login: string, senha: string)
     {
-        const usuarios =  await this.ConsultarUsuarioLogin(login);
+        const usuario =  await this.ConsultarUsuarioLogin(login);
 
-        if (usuarios && usuarios.length > 0) {
-            const usuario = usuarios[0];
+        if (usuario) {
             if (usuario.senha){
                 const senhaBdIntranetStr = Buffer.from(usuario.senha, 'base64').toString('binary');
                 const senhaMd5 = crypto.createHash('md5').update(senhaBdIntranetStr).digest("hex");

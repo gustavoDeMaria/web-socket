@@ -35,44 +35,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoriasController = void 0;
-var categoriasIntranet_1 = require("../services/categoriasIntranet");
-var CategoriasController = /** @class */ (function () {
-    function CategoriasController() {
-        this.categoriasService = new categoriasIntranet_1.CategoriasIntranet();
+exports.PivotalService = void 0;
+var axios_1 = __importDefault(require("axios"));
+var baseUrl = "https://www.pivotaltracker.com/services/v5/";
+var PivotalService = /** @class */ (function () {
+    function PivotalService() {
     }
-    CategoriasController.prototype.obterPorID = function (id, departamentoId) {
+    PivotalService.prototype.ObterStory = function (projetoId, storyId, api_token) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.categoriasService.obterPorID(id, departamentoId)];
-                    case 1: return [2 /*return*/, _a.sent()];
+            var _a, data, status;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, axios_1.default.get("".concat(baseUrl, "projects/").concat(projetoId, "/stories/").concat(storyId.replace("#", "")), {
+                            headers: {
+                                'X-TrackerToken': api_token
+                            }
+                        })];
+                    case 1:
+                        _a = _b.sent(), data = _a.data, status = _a.status;
+                        if (status == 200) {
+                            return [2 /*return*/, data];
+                        }
+                        else {
+                            return [2 /*return*/, null];
+                        }
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    CategoriasController.prototype.obterPorDepartamento = function (departamentoId) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.categoriasService.obterPorDepartamento(departamentoId)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    CategoriasController.prototype.obterTodos = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.categoriasService.obterTodos()];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    return CategoriasController;
+    return PivotalService;
 }());
-exports.CategoriasController = CategoriasController;
-//# sourceMappingURL=categoriasController.js.map
+exports.PivotalService = PivotalService;
+//# sourceMappingURL=pivotalService.js.map

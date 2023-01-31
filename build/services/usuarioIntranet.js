@@ -48,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuarioIntranet = void 0;
-var apontamentoGT_1 = require("./apontamentoGT");
+var prismaPg_1 = require("../database/prismaPg");
 var usuarioIntranet = /** @class */ (function () {
     function usuarioIntranet() {
     }
@@ -56,7 +56,7 @@ var usuarioIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.usuario.create({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.usuario.create({
                             data: __assign({}, data)
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -68,7 +68,7 @@ var usuarioIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.usuario.update({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.usuario.update({
                             where: { oid: data.oid }, data: __assign({}, data)
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -80,7 +80,7 @@ var usuarioIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.usuario.findUnique({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.usuario.findUnique({
                             where: { oid: oid }
                             //, include: { permissoes_perfil: { include: { permissao: true } } }
                         })];
@@ -93,8 +93,10 @@ var usuarioIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.usuario.findMany({
-                            where: { login: login }
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.usuario.findFirst({
+                            where: {
+                                sigla_pivotal: login
+                            }
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -105,7 +107,7 @@ var usuarioIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.usuario.findMany({})];
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.usuario.findMany({})];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -115,7 +117,7 @@ var usuarioIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.usuario.delete({ where: { oid: id } })];
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.usuario.delete({ where: { oid: id } })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

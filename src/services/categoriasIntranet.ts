@@ -1,8 +1,5 @@
 import { categorias } from '@prisma/client';
 import { prismaClient } from '../database/prismaPg';
-import { Icrud } from './interface/Icrud';
-
-
 
 export class CategoriasIntranet
 {

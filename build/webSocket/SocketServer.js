@@ -38,6 +38,10 @@ var SocketServer = /** @class */ (function () {
         var _a;
         return (_a = this.clientesConectados.find(function (sc) { var _a; return ((_a = sc.handshake) === null || _a === void 0 ? void 0 : _a.UsuarioIntranet) === iniciais; })) === null || _a === void 0 ? void 0 : _a.socket;
     };
+    SocketServer.prototype.obterUsuarioIntranet = function (iniciaisPivotal) {
+        var _a;
+        return (_a = this.clientesConectados.find(function (sc) { var _a; return ((_a = sc.handshake) === null || _a === void 0 ? void 0 : _a.UsuarioPivotal) === iniciaisPivotal; })) === null || _a === void 0 ? void 0 : _a.handshake.UsuarioIntranet;
+    };
     SocketServer.prototype.obterClient = function (socketId) {
         var _a;
         return (_a = this.clientesConectados.find(function (sc) { return sc.socket.id === socketId; })) === null || _a === void 0 ? void 0 : _a.handshake;

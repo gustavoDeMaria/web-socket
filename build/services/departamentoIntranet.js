@@ -48,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.departamentosIntranet = void 0;
-var apontamentoGT_1 = require("./apontamentoGT");
+var prismaPg_1 = require("../database/prismaPg");
 var departamentosIntranet = /** @class */ (function () {
     function departamentosIntranet() {
     }
@@ -56,7 +56,7 @@ var departamentosIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.departamentos.create({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.departamentos.create({
                             data: __assign({}, data)
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -68,7 +68,7 @@ var departamentosIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.departamentos.update({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.departamentos.update({
                             where: { id: data.id }, data: __assign({}, data)
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -80,7 +80,7 @@ var departamentosIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.departamentos.findUnique({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.departamentos.findUnique({
                             where: { id: id }
                             //, include: { permissoes_perfil: { include: { permissao: true } } }
                         })];
@@ -93,7 +93,7 @@ var departamentosIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.departamentos.findMany({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.departamentos.findMany({
                         // include: { permissoes_perfil: { include: { permissao: true } } },
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -105,7 +105,7 @@ var departamentosIntranet = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, apontamentoGT_1.prisma.departamentos.delete({ where: { id: id } })];
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.departamentos.delete({ where: { id: id } })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

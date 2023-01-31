@@ -46,20 +46,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.apontamentosGT = exports.prisma = void 0;
-var client_1 = require("@prisma/client");
-exports.prisma = new client_1.PrismaClient();
+exports.apontamentosGT = void 0;
+var prismaPg_1 = require("../database/prismaPg");
 var apontamentosGT = /** @class */ (function () {
     function apontamentosGT() {
     }
     apontamentosGT.prototype.criar = function (data) {
         return __awaiter(this, void 0, void 0, function () {
+            var id, object;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, exports.prisma.logsusuarios.create({
-                            data: __assign({}, data)
-                        })];
+                    case 0:
+                        id = data.id, object = __rest(data, ["id"]);
+                        return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.create({
+                                data: __assign({}, object)
+                            })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -69,7 +82,7 @@ var apontamentosGT = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, exports.prisma.logsusuarios.update({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.update({
                             where: { id: data.id }, data: __assign({}, data)
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -81,10 +94,90 @@ var apontamentosGT = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, exports.prisma.logsusuarios.findUnique({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.findUnique({
                             where: { id: id }
                             //, include: { permissoes_perfil: { include: { permissao: true } } }
                         })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    apontamentosGT.prototype.obterUltimaUsuario = function (login) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.findFirst({
+                            where: { login: login },
+                            orderBy: { datahoraini: "desc" }
+                            //, include: { permissoes_perfil: { include: { permissao: true } } }
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    apontamentosGT.prototype.obterPorPivotalId = function (idpivotal) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.findFirst({
+                            where: {
+                                AND: [
+                                    { idpivotal: idpivotal }
+                                ]
+                            },
+                            orderBy: { datahoraini: "desc" }
+                            //, include: { permissoes_perfil: { include: { permissao: true } } }
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    apontamentosGT.prototype.obterUltimosApontamento = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var lastDay, lastDayStr;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        lastDay = Date.now() - (24 * 60 * 60 * 1000);
+                        lastDayStr = new Date(lastDay).toISOString();
+                        return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.findMany({
+                                where: {
+                                    datahoraini: {
+                                        gte: lastDayStr
+                                    }
+                                },
+                                orderBy: { datahoraini: "desc" },
+                                take: 2
+                            })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    apontamentosGT.prototype.obterUltimoApontamento = function (login) {
+        return __awaiter(this, void 0, void 0, function () {
+            var lastDay, lastDayStr;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        lastDay = Date.now() - (24 * 60 * 60 * 1000);
+                        lastDayStr = new Date(lastDay).toISOString();
+                        return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.findFirst({
+                                where: {
+                                    AND: [
+                                        { datahoraini: {
+                                                gte: lastDayStr
+                                            }
+                                        },
+                                        { login: login }
+                                    ]
+                                },
+                                orderBy: { datahoraini: "desc" },
+                                take: 2
+                            })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -94,7 +187,7 @@ var apontamentosGT = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, exports.prisma.logsusuarios.findMany({
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.findMany({
                             // include: { permissoes_perfil: { include: { permissao: true } } },
                             orderBy: { datahora: "asc" }
                         })];
@@ -107,7 +200,7 @@ var apontamentosGT = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, exports.prisma.logsusuarios.delete({ where: { id: id } })];
+                    case 0: return [4 /*yield*/, prismaPg_1.prismaClient.logsusuarios.delete({ where: { id: id } })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });

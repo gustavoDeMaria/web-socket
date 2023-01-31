@@ -28,7 +28,6 @@ exports.StatusController = void 0;
 var ControllerDecorators_1 = __importDefault(require("../decorators/controllers/ControllerDecorators"));
 var DependecyService_1 = __importDefault(require("../dependencyInjection/DependecyService"));
 var HttpVerbs_1 = require("../enums/httpVerbs/HttpVerbs");
-var Eventos_1 = require("../webSocket/enum/Eventos");
 var SocketServer_1 = require("../webSocket/SocketServer");
 var ControllerBase_1 = require("./base/ControllerBase");
 var StatusController = /** @class */ (function (_super) {
@@ -39,7 +38,6 @@ var StatusController = /** @class */ (function (_super) {
     //@CD.Before(s => { console.log('teste 02'); })
     StatusController.prototype.CheckStatus = function () {
         var server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
-        server.socketServer.to("windows").emit(Eventos_1.Eventos.new_message, { from: "ADM", message: { to: null, content: "Mensagem pra sala windows!!!", type: "text", from: "ADM" } });
         this.OK({ status: "OK", date: new Date() });
     };
     __decorate([

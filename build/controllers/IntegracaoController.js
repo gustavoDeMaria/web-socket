@@ -64,51 +64,198 @@ exports.IntegracaoController = void 0;
 var ControllerDecorators_1 = __importDefault(require("../decorators/controllers/ControllerDecorators"));
 var DependecyService_1 = __importDefault(require("../dependencyInjection/DependecyService"));
 var HttpVerbs_1 = require("../enums/httpVerbs/HttpVerbs");
-var Eventos_1 = require("../webSocket/enum/Eventos");
 var SocketServer_1 = require("../webSocket/SocketServer");
 var ControllerBase_1 = require("./base/ControllerBase");
+var apontamentoGT_1 = require("../services/apontamentoGT");
+var usuarioIntranet_1 = require("../services/usuarioIntranet");
+var categoriasIntranet_1 = require("../services/categoriasIntranet");
+var DateTime_1 = require("./DateTime");
+var pivotalService_1 = require("../services/pivotalService");
+var apontamento = new apontamentoGT_1.apontamentosGT();
+var apontamentoDaIntranet = new usuarioIntranet_1.usuarioIntranet();
+var categoriasIntranet = new categoriasIntranet_1.CategoriasIntranet();
+var pivotalService = new pivotalService_1.PivotalService();
 var IntegracaoController = /** @class */ (function (_super) {
     __extends(IntegracaoController, _super);
     function IntegracaoController() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     IntegracaoController.prototype.webHook = function () {
-        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var server, story, novosValores, cliente;
-            return __generator(this, function (_b) {
-                try {
-                    console.log("BODY: ", this.Request.body);
-                    this.OK("Gerado com sucesso!");
-                    server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
-                    story = this.Request.body;
-                    if (story) {
-                        novosValores = this.obtemNovosValoresSeAlterado(story);
-                        if (novosValores) {
-                            cliente = server.obterSocketClient(story.performed_by.initials);
-                            if (cliente) {
-                                server.enviarMensagemTo(cliente.id, Eventos_1.Eventos.new_registration_requested, { Guide: cliente === null || cliente === void 0 ? void 0 : cliente.id, UltimoPivotal: (_a = story.primary_resources[0]) === null || _a === void 0 ? void 0 : _a.id });
-                            }
-                        }
-                    }
-                    this.OK("Gerado com sucesso!");
+            var server, story, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        server = DependecyService_1.default.Resolve(SocketServer_1.SocketServer);
+                        story = this.Request.body;
+                        if (!story) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.tratarAlteracaoStory(server, story)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        this.OK("Gerado com sucesso!");
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_1 = _a.sent();
+                        this.Error({ error: err_1.message });
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
-                catch (err) {
-                    this.Error({ error: err.message });
+            });
+        });
+    };
+    IntegracaoController.prototype.tratarAlteracaoStory = function (server, story) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                if (story && story.changes
+                    .filter(function (modificacao) { return modificacao.original_values.current_state
+                    !== modificacao.new_values.current_state; })) {
+                    story.changes.forEach(function (modificacao) { return __awaiter(_this, void 0, void 0, function () {
+                        var detalhesStory, _a;
+                        var _b, _c;
+                        return __generator(this, function (_d) {
+                            switch (_d.label) {
+                                case 0:
+                                    if (!modificacao.new_values) return [3 /*break*/, 4];
+                                    detalhesStory = this.ObterDadosPivotal(story);
+                                    if (!detalhesStory) return [3 /*break*/, 4];
+                                    _a = modificacao.new_values.current_state;
+                                    switch (_a) {
+                                        case "finished": return [3 /*break*/, 1];
+                                        case "started": return [3 /*break*/, 2];
+                                    }
+                                    return [3 /*break*/, 4];
+                                case 1:
+                                    console.log("APONTAR FINALIZA\u00C7\u00C3O DE TAREFA ".concat((_b = story.primary_resources.find(function (s) { return s.kind === "story"; })) === null || _b === void 0 ? void 0 : _b.id, " PARA ").concat(story.performed_by.name, " (").concat(story.performed_by.initials, ")"));
+                                    //await this.apontarGT(server, detalhesStory);
+                                    return [3 /*break*/, 4];
+                                case 2:
+                                    console.log("APONTAR IN\u00CDCIO DE TAREFA ".concat((_c = story.primary_resources.find(function (s) { return s.kind === "story"; })) === null || _c === void 0 ? void 0 : _c.id, " PARA ").concat(story.performed_by.name, " (").concat(story.performed_by.initials, ")"));
+                                    return [4 /*yield*/, this.apontarGT(server, detalhesStory)];
+                                case 3:
+                                    _d.sent();
+                                    return [3 /*break*/, 4];
+                                case 4: return [2 /*return*/];
+                            }
+                        });
+                    }); });
                 }
                 return [2 /*return*/];
             });
         });
     };
-    IntegracaoController.prototype.obtemNovosValoresSeAlterado = function (story) {
-        if (story && story.changes.filter(function (modificacao) { return modificacao.original_values.current_state !== modificacao.new_values.current_state; })) {
-            story.changes.forEach(function (modificacao) {
-                if (modificacao.new_values.current_state === "delivered") {
-                    return modificacao.new_values;
+    IntegracaoController.prototype.ObterDadosPivotal = function (story) {
+        var _a, _b;
+        var detalhes = story.primary_resources.find(function (piv) { return piv.kind === 'story'; });
+        var alteracaoes = story.changes.find(function (piv) { return piv.kind === 'story'; });
+        if (detalhes && alteracaoes) {
+            return {
+                titulopivotal: detalhes.name,
+                tipopivotal: detalhes.story_type,
+                statuspivotalini: (_a = alteracaoes === null || alteracaoes === void 0 ? void 0 : alteracaoes.new_values.current_state) !== null && _a !== void 0 ? _a : "",
+                statuspivotalfim: "",
+                pontospivotal: (_b = alteracaoes === null || alteracaoes === void 0 ? void 0 : alteracaoes.story_priority.substring(1, 1)) !== null && _b !== void 0 ? _b : "",
+                projetopivotal: story.project.id,
+                storyId: detalhes.id.toString(),
+                usuario: story.performed_by.initials
+            };
+        }
+        else {
+            return null;
+        }
+    };
+    IntegracaoController.prototype.apontarGT = function (server, pivotal) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var usuarioIntranet, categorias, login, ultima, error_1;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _c.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, apontamentoDaIntranet.obterPorLogin(pivotal.usuario)];
+                    case 1:
+                        usuarioIntranet = _c.sent();
+                        return [4 /*yield*/, categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal)];
+                    case 2:
+                        categorias = _c.sent();
+                        if (!(usuarioIntranet && categorias && categorias.length > 0)) return [3 /*break*/, 5];
+                        login = (_a = usuarioIntranet.login) !== null && _a !== void 0 ? _a : "";
+                        return [4 /*yield*/, this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token)];
+                    case 3:
+                        ultima = _c.sent();
+                        if (!(!ultima || ((_b = ultima.idpivotal) === null || _b === void 0 ? void 0 : _b.replace("#", "")) !== pivotal.storyId)) return [3 /*break*/, 5];
+                        //realiza apontamento
+                        return [4 /*yield*/, apontamento.criar({
+                                id: 0,
+                                login: login,
+                                atividade: categorias[0].id,
+                                datahora: DateTime_1.DateTime.Now(),
+                                obs: null,
+                                datahoraini: DateTime_1.DateTime.Now(),
+                                dificuldade: null,
+                                titulopivotal: pivotal.titulopivotal,
+                                tipopivotal: pivotal.tipopivotal,
+                                statuspivotalini: pivotal.statuspivotalini,
+                                statuspivotalfim: pivotal.statuspivotalfim,
+                                pontospivotal: pivotal.pontospivotal,
+                                depto_id: categorias[0].depto_id,
+                                idpivotal: "#" + pivotal.storyId
+                            })];
+                    case 4:
+                        //realiza apontamento
+                        _c.sent();
+                        _c.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _c.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
-        }
-        return undefined;
+        });
+    };
+    IntegracaoController.prototype.finalizarApontamentoGT = function (server, pivotal, api_token) {
+        return __awaiter(this, void 0, void 0, function () {
+            var usuarioIntranet, ultima, categoria, pivotalStatus, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 7, , 8]);
+                        return [4 /*yield*/, apontamentoDaIntranet.obterPorLogin(pivotal.usuario)];
+                    case 1:
+                        usuarioIntranet = _a.sent();
+                        if (!(usuarioIntranet && usuarioIntranet.login)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, apontamento.obterUltimoApontamento(usuarioIntranet.login)];
+                    case 2:
+                        ultima = _a.sent();
+                        if (!(ultima && ultima.idpivotal)) return [3 /*break*/, 6];
+                        if (!(ultima.idpivotal && ultima.atividade && ultima.depto_id)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, categoriasIntranet.obterPorID(ultima.atividade, ultima.depto_id)];
+                    case 3:
+                        categoria = _a.sent();
+                        if (!(categoria && categoria.projeto_idpivotal && api_token)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, pivotalService.ObterStory(categoria.projeto_idpivotal, ultima.idpivotal, api_token)];
+                    case 4:
+                        pivotalStatus = _a.sent();
+                        if (!pivotalStatus) return [3 /*break*/, 6];
+                        ultima.statuspivotalfim = pivotalStatus.current_state;
+                        return [4 /*yield*/, apontamento.atualizar(ultima)];
+                    case 5:
+                        _a.sent();
+                        return [2 /*return*/, ultima];
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
+                        error_2 = _a.sent();
+                        console.error(error_2);
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
     };
     __decorate([
         ControllerDecorators_1.default.Action("/pivotal"),

@@ -1,12 +1,12 @@
 import { departamentos } from '@prisma/client';
+import { prismaClient } from '../database/prismaPg';
 import { Icrud } from './interface/Icrud';
-import { prisma } from './apontamentoGT';
 
 
 export class departamentosIntranet implements Icrud<departamentos>
 {
     async criar(data: departamentos): Promise<departamentos> {
-        return await prisma.departamentos.create({
+        return await prismaClient.departamentos.create({
             data: {
                 ...data,
             }
@@ -14,7 +14,7 @@ export class departamentosIntranet implements Icrud<departamentos>
     }
 
     async atualizar(data: departamentos): Promise<departamentos> {
-        return await prisma.departamentos.update({
+        return await prismaClient.departamentos.update({
             where: { id: data.id }, data: {
                 ...data
             }
@@ -22,20 +22,20 @@ export class departamentosIntranet implements Icrud<departamentos>
     }
 
     async obterPorID(id: any): Promise<departamentos | null> {
-        return await prisma.departamentos.findUnique({
+        return await prismaClient.departamentos.findUnique({
             where: { id }
             //, include: { permissoes_perfil: { include: { permissao: true } } }
         });
     }
 
     async obterTodos(): Promise<departamentos[]> {
-        return await prisma.departamentos.findMany({
+        return await prismaClient.departamentos.findMany({
             // include: { permissoes_perfil: { include: { permissao: true } } },
         });
     }
 
     async excluirPorID(id: number): Promise<departamentos | null> {
-        return await prisma.departamentos.delete({ where: { id: id } });
+        return await prismaClient.departamentos.delete({ where: { id: id } });
     }
 
 }
