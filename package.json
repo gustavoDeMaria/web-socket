@@ -13,6 +13,7 @@
     "reflect-metadata": "^0.1.13",
     "socket.io": "^4.5.4"
   },
+  "scripts": {"build": "yarn prisma generate && tsc -p ."},
   "devDependencies": {
     "@prisma/client": "^4.9.0",
     "@types/axios": "^0.14.0",
