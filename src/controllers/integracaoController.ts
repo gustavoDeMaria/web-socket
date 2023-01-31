@@ -129,7 +129,7 @@ export class IntegracaoController extends ControllerBase {
                     const categoriasFiltradas = cq ? categorias.find(cat => cat.nome?.indexOf("Teste") !== -1)
                         : categorias.find(cat => cat.nome?.indexOf("Teste") === -1);
 
-                        console.log("categoriasFiltradas", categoriasFiltradas);
+                    console.log("categoriasFiltradas", cq, categoriasFiltradas);
 
                     if (usuarioIntranet && categoriasFiltradas) {
 
