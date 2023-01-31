@@ -14,6 +14,7 @@
         after_id: number;
         current_state: string;
         updated_at: number;
+        status: string;
     }
 
     export interface IOriginalValues {

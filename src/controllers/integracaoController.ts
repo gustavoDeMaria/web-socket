@@ -50,7 +50,7 @@ export class IntegracaoController extends ControllerBase {
             .filter(modificacao => modificacao.original_values.current_state
                 !== modificacao.new_values.current_state)) {
             story.changes.forEach(async modificacao => {
-                if (modificacao.new_values) {
+                if (modificacao.kind === 'story' && modificacao.new_values) {
 
                     const detalhesStory = this.ObterDadosPivotal(story);
 
@@ -67,13 +67,24 @@ export class IntegracaoController extends ControllerBase {
                                 break;
                         }
                     }
+                }
+                else if (modificacao.kind === 'review' && modificacao.new_values) {
 
-                    //const cliente = server.obterSocketClient(story.performed_by.initials);
+                    const detalhesStory = this.ObterDadosPivotal(story);
 
-                    //if (cliente) {
-                    //    server.enviarMensagemTo(cliente.id, Eventos.new_registration_requested, { Guide: cliente?.id, UltimoPivotal: story.primary_resources[0]?.id });
-                    //}
+                    if (detalhesStory) {
+                        switch (modificacao.new_values.status) {
+                            case "finished":
+                                console.log(`APONTAR FINALIZAÇÃO DE TAREFA ${story.primary_resources.find(s => s.kind === "story")?.id} PARA ${story.performed_by.name} (${story.performed_by.initials})`);
+                                //await this.apontarGT(server, detalhesStory);
+                                break;
 
+                            case "in_review":
+                                console.log(`APONTAR INÍCIO DE TAREFA ${story.primary_resources.find(s => s.kind === "story")?.id} PARA ${story.performed_by.name} (${story.performed_by.initials})`);
+                                await this.apontarGT(server, detalhesStory, true);
+                                break;
+                        }
+                    }
                 }
             });
         }
@@ -101,7 +112,7 @@ export class IntegracaoController extends ControllerBase {
         }
     }
 
-    async apontarGT(server: SocketServer, pivotal: IPivotalStory) {
+    async apontarGT(server: SocketServer, pivotal: IPivotalStory, cq: boolean = true) {
 
         try {
             //obtem usuario
@@ -109,11 +120,11 @@ export class IntegracaoController extends ControllerBase {
             if (usuarioIntranet && usuarioIntranet.depto_id) {
                 //obtem categoria
                 const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal,
-                                         usuarioIntranet.depto_id);
+                    usuarioIntranet.depto_id);
 
                 if (categorias && categorias.length > 0) {
 
-                    const categoriasFiltradas = categorias.find(cat => cat.nome?.indexOf("Teste") == -1);
+                    const categoriasFiltradas = categorias.find(cat => cat.nome?.indexOf("Teste") == (cq ? 0 : -1));
 
                     if (usuarioIntranet && categoriasFiltradas) {
 
