@@ -1,7 +1,7 @@
 import { SocketServer } from "../SocketServer";
 import { SocketIO } from "../SocketIO";
 import { Eventos } from "../enum/Eventos";
-import { IUsuarioOnline, UsuariosOnline } from "../../models/UsuariosOnline";
+import { IUsuarioOnline, UsuariosOnline } from "../../models/usuariosOnline";
 
 export function tratarUserOnline(server: SocketServer, client: SocketIO): (...args: any[]) => void {
     return () => {        
