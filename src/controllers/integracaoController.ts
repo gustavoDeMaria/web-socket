@@ -110,33 +110,38 @@ export class IntegracaoController extends ControllerBase {
             //obtem categoria
             const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal);
 
-            if (usuarioIntranet && categorias && categorias.length > 0) {
+            if (categorias && categorias.length > 0) {
+                
+                const categoriasFiltradas = categorias.find(cat=> cat.nome?.indexOf("Teste") == -1)
 
-                const login = usuarioIntranet.login ?? "";
+                if (usuarioIntranet && categoriasFiltradas) {
 
-                // finaliza última tarefa
-                const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
+                    const login = usuarioIntranet.login ?? "";
 
-               if (!ultima || ultima.idpivotal?.replace("#","") !== pivotal.storyId){
-                 //realiza apontamento
-                 await apontamento.criar({
-                    id: 0,
-                    login: login,
-                    atividade: categorias[0].id,
-                    datahora: DateTime.Now(),
-                    obs: null,
-                    datahoraini: DateTime.Now(),
-                    dificuldade: null,
-                    titulopivotal: pivotal.titulopivotal,
-                    tipopivotal: pivotal.tipopivotal,
-                    statuspivotalini: pivotal.statuspivotalini,
-                    statuspivotalfim: pivotal.statuspivotalfim,
-                    pontospivotal: pivotal.pontospivotal,
-                    depto_id: categorias[0].depto_id,
-                    idpivotal: "#" + pivotal.storyId
-                });
-               }
-                //nofica socket
+                    // finaliza última tarefa
+                    const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
+
+                    if (!ultima || ultima.idpivotal?.replace("#", "") !== pivotal.storyId) {
+                        //realiza apontamento
+                        await apontamento.criar({
+                            id: 0,
+                            login: login,
+                            atividade: categorias[0].id,
+                            datahora: DateTime.Now(),
+                            obs: null,
+                            datahoraini: DateTime.Now(),
+                            dificuldade: null,
+                            titulopivotal: pivotal.titulopivotal,
+                            tipopivotal: pivotal.tipopivotal,
+                            statuspivotalini: pivotal.statuspivotalini,
+                            statuspivotalfim: pivotal.statuspivotalfim,
+                            pontospivotal: pivotal.pontospivotal,
+                            depto_id: categorias[0].depto_id,
+                            idpivotal: "#" + pivotal.storyId
+                        });
+                    }
+                    //nofica socket
+                }
             }
         } catch (error) {
             console.error(error);
@@ -153,9 +158,9 @@ export class IntegracaoController extends ControllerBase {
             if (usuarioIntranet && usuarioIntranet.login) {
 
                 // finaliza última tarefa
-                const ultima = await apontamento.obterUltimoApontamento(usuarioIntranet.login)
+                const ultima = await apontamento.obterUltimoApontamento(usuarioIntranet.login);
 
-                if (ultima &&  ultima.idpivotal) {
+                if (ultima && ultima.idpivotal) {
 
                     if (ultima.idpivotal && ultima.atividade && ultima.depto_id) {
 
