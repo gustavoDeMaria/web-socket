@@ -80,7 +80,7 @@ export class IntegracaoController extends ControllerBase {
                                 break;
 
                             case "in_review":
-                                console.log(`APONTAR INÍCIO DE TAREFA ${story.primary_resources.find(s => s.kind === "story")?.id} PARA ${story.performed_by.name} (${story.performed_by.initials})`);
+                                console.log(`APONTAR REVIEW DE TAREFA ${story.primary_resources.find(s => s.kind === "story")?.id} PARA ${story.performed_by.name} (${story.performed_by.initials})`);
                                 await this.apontarGT(server, detalhesStory, true);
                                 break;
                         }
@@ -122,9 +122,14 @@ export class IntegracaoController extends ControllerBase {
                 const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal,
                     usuarioIntranet.depto_id);
 
+                    console.log("categorias", categorias);
+
                 if (categorias && categorias.length > 0) {
 
-                    const categoriasFiltradas = categorias.find(cat => cat.nome?.indexOf("Teste") == (cq ? 0 : -1));
+                    const categoriasFiltradas = cq ? categorias.find(cat => cat.nome?.indexOf("Teste") !== -1)
+                        : categorias.find(cat => cat.nome?.indexOf("Teste") === -1);
+
+                        console.log("categoriasFiltradas", categoriasFiltradas);
 
                     if (usuarioIntranet && categoriasFiltradas) {
 
