@@ -106,44 +106,42 @@ export class IntegracaoController extends ControllerBase {
         try {
             //obtem usuario
             const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
+            if (usuarioIntranet) {
+                //obtem categoria
+                const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal, usuarioIntranet?.depto_id);
 
-            //obtem categoria
-            const categorias = await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal);
+                if (categorias && categorias.length > 0) {
 
-            if (categorias && categorias.length > 0) {
-                
-                const categoriasFiltradas = categorias.find(cat=> cat.nome?.indexOf("Teste") == -1)
+                    const categoriasFiltradas = categorias.find(cat => cat.nome?.indexOf("Teste") == -1);
 
-                console.log("categorias", categorias);
-                console.log("categoriasFiltradas", categoriasFiltradas);
+                    if (usuarioIntranet && categoriasFiltradas) {
 
-                if (usuarioIntranet && categoriasFiltradas) {
+                        const login = usuarioIntranet.login ?? "";
 
-                    const login = usuarioIntranet.login ?? "";
+                        // finaliza última tarefa
+                        const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
 
-                    // finaliza última tarefa
-                    const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
-
-                    if (!ultima || ultima.idpivotal?.replace("#", "") !== pivotal.storyId) {
-                        //realiza apontamento
-                        await apontamento.criar({
-                            id: 0,
-                            login: login,
-                            atividade: categorias[0].id,
-                            datahora: DateTime.Now(),
-                            obs: null,
-                            datahoraini: DateTime.Now(),
-                            dificuldade: null,
-                            titulopivotal: pivotal.titulopivotal,
-                            tipopivotal: pivotal.tipopivotal,
-                            statuspivotalini: pivotal.statuspivotalini,
-                            statuspivotalfim: pivotal.statuspivotalfim,
-                            pontospivotal: pivotal.pontospivotal,
-                            depto_id: categorias[0].depto_id,
-                            idpivotal: "#" + pivotal.storyId
-                        });
+                        if (!ultima || ultima.idpivotal?.replace("#", "") !== pivotal.storyId) {
+                            //realiza apontamento
+                            await apontamento.criar({
+                                id: 0,
+                                login: login,
+                                atividade: categoriasFiltradas.id,
+                                datahora: DateTime.Now(),
+                                obs: null,
+                                datahoraini: DateTime.Now(),
+                                dificuldade: null,
+                                titulopivotal: pivotal.titulopivotal,
+                                tipopivotal: pivotal.tipopivotal,
+                                statuspivotalini: pivotal.statuspivotalini,
+                                statuspivotalfim: pivotal.statuspivotalfim,
+                                pontospivotal: pivotal.pontospivotal,
+                                depto_id: categorias[0].depto_id,
+                                idpivotal: "#" + pivotal.storyId
+                            });
+                        }
+                        //nofica socket
                     }
-                    //nofica socket
                 }
             }
         } catch (error) {

@@ -42,10 +42,10 @@ export class CategoriasIntranet
         });
     }
 
-    async obterPorProjetoPivotal(projeto_idpivotal: number): Promise<categorias[] | null> {
+    async obterPorProjetoPivotal(projeto_idpivotal: number, depto_id: number): Promise<categorias[] | null> {
        try {
         return await prismaClient.categorias.findMany({
-            where: { projeto_idpivotal }
+            where: { projeto_idpivotal, depto_id }
         });
        } catch (error) {
         console.error(error);
