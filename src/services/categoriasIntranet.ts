@@ -38,6 +38,13 @@ export class CategoriasIntranet
 
     async obterPorDepartamento(depto_id: any): Promise<categorias[] | null> {
         return await prismaClient.categorias.findMany({
+            where: { AND:[{depto_id}, {status: 'A'}] },
+            orderBy: { nome: 'asc' }
+        });
+    }
+
+    async obterPorDepartamentoResumido(depto_id: any): Promise<categorias[] | null> {
+        return await prismaClient.categorias.findMany({
             where: { depto_id }
         });
     }
