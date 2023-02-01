@@ -4,8 +4,6 @@ import { tratarHandShake } from "./tratarHandShake";
 import { tratarNewMessage } from "./tratarNewMessage";
 import { SocketServer } from "../SocketServer";
 import { tratarUserOnline } from "./tratarUserOnline";
-import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { tratarMessageReceived } from "./tratarMessageReceived";
 import { tratarCategoriaRequest } from "./tratarCategoriaRequest";
 import { apontarGT } from "./apontarGT";
