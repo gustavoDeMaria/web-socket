@@ -20,7 +20,7 @@ export function apontarGT(server: SocketServer, client: SocketIO): (...args: any
 
         const usuarioSocket = server.obterClient(client.id)?.UsuarioIntranet;
 
-        if(usuarioSocket){
+        if(usuarioSocket && request){
             const usuarioIntranet = await UsuarioIntranet.obterPorLogin(usuarioSocket);
 
             if (usuarioIntranet){
