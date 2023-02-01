@@ -16,7 +16,7 @@ export class UsuarioController
     }    
          
     private async ConsultarUsuarioLogin(login: string) {
-        return await this.usuarioService.obterPorLogin(login)
+        return await this.usuarioService.obterPorLoginPivotal(login)
     }
 
     private async ValidarSenha(login: string, senha: string)

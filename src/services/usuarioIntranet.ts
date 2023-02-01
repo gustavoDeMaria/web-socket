@@ -27,10 +27,18 @@ export class usuarioIntranet implements Icrud<usuario>
         });
     }
 
-    async obterPorLogin(login: string) {
+    async obterPorLoginPivotal(login: string) {
         return await prismaClient.usuario.findFirst({
             where: {
                 sigla_pivotal: login
+            }
+        });
+    }
+
+    async obterPorLogin(login: string) {
+        return await prismaClient.usuario.findFirst({
+            where: {
+                login: login
             }
         });
     }

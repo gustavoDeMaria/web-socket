@@ -116,7 +116,7 @@ export class IntegracaoController extends ControllerBase {
 
         try {
             //obtem usuario
-            const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
+            const usuarioIntranet = await apontamentoDaIntranet.obterPorLoginPivotal(pivotal.usuario);
             if (usuarioIntranet && usuarioIntranet.depto_id) {
                 //obtem categoria
                 const categorias = cq? undefined 
@@ -168,7 +168,7 @@ export class IntegracaoController extends ControllerBase {
 
         try {
             //obtem usuario
-            const usuarioIntranet = await apontamentoDaIntranet.obterPorLogin(pivotal.usuario);
+            const usuarioIntranet = await apontamentoDaIntranet.obterPorLoginPivotal(pivotal.usuario);
 
             if (usuarioIntranet && usuarioIntranet.login) {
 

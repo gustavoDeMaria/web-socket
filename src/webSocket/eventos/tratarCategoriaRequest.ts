@@ -12,6 +12,8 @@ export function tratarCategoriaRequest(server: SocketServer, client: SocketIO): 
 
         const usuarioSocket = server.obterClient(client.id)?.UsuarioIntranet;
 
+        console.log("usuario", usuarioSocket)
+
         if(usuarioSocket){
             const usuarioIntranet = await UsuarioIntranet.obterPorLogin(usuarioSocket);
 
