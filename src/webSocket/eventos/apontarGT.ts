@@ -19,12 +19,14 @@ export function apontarGT(server: SocketServer, client: SocketIO): (...args: any
     return async (request: IApontamentoRequest) => {
 
         const usuarioSocket = server.obterClient(client.id)?.UsuarioIntranet;
-
+console.log('usuarioSocket', usuarioSocket)
+console.log('request', request)
         if(usuarioSocket && request){
             const usuarioIntranet = await UsuarioIntranet.obterPorLogin(usuarioSocket);
+            console.log('usuarioIntranet', usuarioIntranet)
 
             if (usuarioIntranet){
-                    await apontamento.criar({
+                   const criado = await apontamento.criar({
                         id: 0,
                         login: usuarioIntranet.login,
                         atividade: request.CategoriaId,
@@ -41,7 +43,11 @@ export function apontarGT(server: SocketServer, client: SocketIO): (...args: any
                         idpivotal: null
                     });
 
+                    console.log('criado', criado)
+                
+                    if (criado){
                     server.enviarMensagemTo(client.id, Eventos.apontamento_sucesso, request.Id);
+                    }
             }
         }
     };

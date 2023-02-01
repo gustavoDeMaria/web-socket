@@ -19,11 +19,7 @@ export function tratarEventosWebSockets(server: SocketServer) {
         client.on(Eventos.message_received, tratarMessageReceived(server, client));
         client.on(Eventos.categoria_request, tratarCategoriaRequest(server, client));
         client.on(Eventos.apontamento_request, apontarGT(server, client));
-
-        client.join("windows");
     });
-
-    server.socketServer.socketsJoin("windows");
 }
 
 
