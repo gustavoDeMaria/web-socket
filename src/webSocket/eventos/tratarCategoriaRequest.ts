@@ -10,19 +10,16 @@ const categorias = new CategoriasIntranet();
 export function tratarCategoriaRequest(server: SocketServer, client: SocketIO): (...args: any[]) => void {
     return async () => {
 
-        console.log("entrou")
-        const user = server.obterClient(client.id)?.UsuarioIntranet;
-        console.log("user", user)
-        
+        const usuarioSocket = server.obterClient(client.id)?.UsuarioIntranet;
 
-        if(user){
-            const usuario = await UsuarioIntranet.obterPorLogin(user);
+        if(usuarioSocket){
+            const usuarioIntranet = await UsuarioIntranet.obterPorLogin(usuarioSocket);
 
-            console.log("usuario", usuario)
+            console.log("usuario", usuarioIntranet)
 
 
-            if (usuario){
-                const categoriaArray = await categorias.obterPorDepartamento(usuario.depto_id);
+            if (usuarioIntranet){
+                const categoriaArray = await categorias.obterPorDepartamento(usuarioIntranet.depto_id);
 
                 console.log("categoriaArray", categoriaArray)
 

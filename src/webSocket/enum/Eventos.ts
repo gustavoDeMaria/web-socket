@@ -11,5 +11,7 @@ export enum Eventos {
     user_online_response = "user-online-response",
     message_received = "message-received",
     categoria_request = "categoria-request",
-    categoria_response = "categoria-response"
+    categoria_response = "categoria-response",
+    apontamento_request = "apontamento-request",
+    apontamento_sucesso = "apontamento-sucesso"
 }

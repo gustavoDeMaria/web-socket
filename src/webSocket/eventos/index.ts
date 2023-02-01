@@ -8,6 +8,7 @@ import { Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { tratarMessageReceived } from "./tratarMessageReceived";
 import { tratarCategoriaRequest } from "./tratarCategoriaRequest";
+import { apontarGT } from "./apontarGT";
 
 export function tratarEventosWebSockets(server: SocketServer) {
     server.socketServer.on(Eventos.connection, (client) => {
@@ -17,11 +18,13 @@ export function tratarEventosWebSockets(server: SocketServer) {
         client.on(Eventos.user_online_request, tratarUserOnline(server, client));
         client.on(Eventos.message_received, tratarMessageReceived(server, client));
         client.on(Eventos.categoria_request, tratarCategoriaRequest(server, client));
+        client.on(Eventos.apontamento_request, apontarGT(server, client));
 
         client.join("windows");
     });
 
     server.socketServer.socketsJoin("windows");
 }
+
 
 
