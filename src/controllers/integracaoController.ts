@@ -116,6 +116,7 @@ export class IntegracaoController extends ControllerBase {
 
         try {
             console.log("apontarGT");
+            console.log("pivotal.usuario", pivotal.usuario);
             //obtem usuario
             const usuarioIntranet = await apontamentoDaIntranet.obterPorLoginPivotal(pivotal.usuario);
 
