@@ -115,18 +115,30 @@ export class IntegracaoController extends ControllerBase {
     async apontarGT(server: SocketServer, pivotal: IPivotalStory, cq: boolean = false) {
 
         try {
+            console.log("apontarGT");
             //obtem usuario
             const usuarioIntranet = await apontamentoDaIntranet.obterPorLoginPivotal(pivotal.usuario);
+
+            console.log("usuarioIntranet", usuarioIntranet);
+            console.log("usuarioIntranet.depto_id", usuarioIntranet?.depto_id);
+
+            console.log("cq", cq);
+
             if (usuarioIntranet && usuarioIntranet.depto_id) {
                 //obtem categoria
                 const categorias = cq? undefined 
                                         : await categoriasIntranet.obterPorProjetoPivotal(pivotal.projetopivotal,
                                                                                             usuarioIntranet.depto_id);
 
+                console.log("categorias", categorias);
+
                 if (categorias && categorias.length > 0) {
 
                     const categoriasFiltradas = cq ? categorias.find(cat => cat.nome?.indexOf("Teste") !== -1)
                         : categorias.find(cat => cat.nome?.indexOf("Teste") === -1);
+
+                console.log("categoriasFiltradas", categoriasFiltradas);
+
 
                     if (usuarioIntranet && categoriasFiltradas) {
 
@@ -135,9 +147,11 @@ export class IntegracaoController extends ControllerBase {
                         // finaliza última tarefa
                         const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
 
+                        console.log("ultima", ultima)
+
                         if (!ultima || ultima.idpivotal?.replace("#", "") !== pivotal.storyId) {
                             //realiza apontamento
-                            await apontamento.criar({
+                           const log = await apontamento.criar({
                                 id: 0,
                                 login: login,
                                 atividade: categoriasFiltradas.id,
@@ -153,6 +167,8 @@ export class IntegracaoController extends ControllerBase {
                                 depto_id: categorias[0].depto_id,
                                 idpivotal: "#" + pivotal.storyId
                             });
+
+                            console.log("apontado", log)
                         }
                         //nofica socket
                     }
