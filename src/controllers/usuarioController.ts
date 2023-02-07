@@ -19,7 +19,7 @@ export class UsuarioController
         return await this.usuarioService.obterPorLoginPivotal(login)
     }
 
-    private async ValidarSenha(login: string, senha: string)
+    public async ValidarSenha(login: string, senha: string)
     {
         const usuario =  await this.ConsultarUsuarioLogin(login);
 
