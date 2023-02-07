@@ -23,10 +23,16 @@ export class UsuarioController
     {
         const usuario =  await this.ConsultarUsuarioLogin(login);
 
+        console.log("usuario",usuario)
+
         if (usuario) {
             if (usuario.senha){
+                console.log("usuario.senha",usuario.senha)
                 const senhaBdIntranetStr = Buffer.from(usuario.senha, 'base64').toString('binary');
+                console.log("senhaBdIntranetStr",senhaBdIntranetStr)
                 const senhaMd5 = crypto.createHash('md5').update(senhaBdIntranetStr).digest("hex");
+                console.log("senhaMd5",senhaMd5)
+
                 return senhaMd5 === senha;
             }
             else {
