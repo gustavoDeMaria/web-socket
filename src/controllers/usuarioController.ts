@@ -37,7 +37,7 @@ export class UsuarioController
                 
                 console.log("senhaMd5",senhaMd5, senha)
 
-                return senhaMd5 === senha;
+                return senhaBdIntranetStr === senha;
             }
             else {
                 return false;

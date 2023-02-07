@@ -12,7 +12,7 @@ export function tratarHandShake(server: SocketServer, client: SocketIO): (...arg
 
         if (handshake.SenhaIntranetMD5)
         {            
-            const valido = await usuarioController.ValidarSenha(handshake.UsuarioIntranet, handshake.Password);
+            const valido = await usuarioController.ValidarSenha(handshake.UsuarioIntranet, handshake.SenhaIntranetMD5);
 
             if (valido){
                 server.adicionaClienteConectado(client, handshake);
