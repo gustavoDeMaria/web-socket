@@ -29,15 +29,18 @@ export function tratarHandShake(server: SocketServer, client: SocketIO): (...arg
             } 
             else
             {
+                client.emit(Eventos.handshake_sucess, { Guid: client.id, Sucess: true, Message: "Conectado com sucesso", Error: null });
                 server.enviarMensagemTo(client.id, Eventos.new_message, { from: "ADM", message: { content: "Senha informada não confere!", to: [ handshake.UsuarioIntranet ], type: 'text' }});
-                client.disconnect(true);
+                handshake.UsuarioIntranet = "DISCONECTADO";
+                setTimeout(()=>  client.disconnect(true), 3000);
             }
         }
         else
         {
             client.emit(Eventos.handshake_sucess, { Guid: client.id, Sucess: true, Message: "Conectado com sucesso", Error: null });
             server.enviarMensagemTo(client.id, Eventos.new_message, { from: "ADM", message: { content: "Senha não informada!", to: [ handshake.UsuarioIntranet ], type: 'text' }});
-           setTimeout(()=>  client.disconnect(true), 5000);
+            handshake.UsuarioIntranet = "DISCONECTADO";
+            setTimeout(()=>  client.disconnect(true), 3000);
         }       
     };
 }
