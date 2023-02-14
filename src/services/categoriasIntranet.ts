@@ -27,7 +27,7 @@ export class CategoriasIntranet
       try {
         return await prismaClient.categorias.findUniqueOrThrow({
             where: { id_depto_id: { id, depto_id }},
-            select: { departamentos: false, depto_id: true, projeto_idpivotal:true }
+            select: { departamentos: false, depto_id: true, projeto_idpivotal:true, nome: true }
                    
         });
       } catch (error) {

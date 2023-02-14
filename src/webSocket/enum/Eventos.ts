@@ -13,5 +13,7 @@ export enum Eventos {
     categoria_request = "categoria-request",
     categoria_response = "categoria-response",
     apontamento_request = "apontamento-request",
-    apontamento_sucesso = "apontamento-sucesso"
+    apontamento_sucesso = "apontamento-sucesso",
+    solicita_tarefa_atual_request = "solicita-tarefa-atual-request",
+    solicita_tarefa_atual_response = "solicita-tarefa-atual-response"
 }

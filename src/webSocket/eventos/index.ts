@@ -7,6 +7,9 @@ import { tratarUserOnline } from "./tratarUserOnline";
 import { tratarMessageReceived } from "./tratarMessageReceived";
 import { tratarCategoriaRequest } from "./tratarCategoriaRequest";
 import { apontarGT } from "./apontarGT";
+import { Socket } from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { tratarSolicitacaoUltimaTarefa } from "./tratarSolicitacaoUltimaTarefa";
 
 export function tratarEventosWebSockets(server: SocketServer) {
     server.socketServer.on(Eventos.connection, (client) => {
@@ -17,6 +20,7 @@ export function tratarEventosWebSockets(server: SocketServer) {
         client.on(Eventos.message_received, tratarMessageReceived(server, client));
         client.on(Eventos.categoria_request, tratarCategoriaRequest(server, client));
         client.on(Eventos.apontamento_request, apontarGT(server, client));
+        client.on(Eventos.solicita_tarefa_atual_request, tratarSolicitacaoUltimaTarefa(server, client));
     });
 }
 
