@@ -4,9 +4,11 @@ import { apontamentosGT } from "../../services/apontamentoGT";
 import { usuarioIntranet } from "../../services/usuarioIntranet";
 import { DateTime } from "../../controllers/DateTime";
 import { Eventos } from "../enum/Eventos";
+import { IntegracaoController } from "../../controllers/integracaoController";
 
 const apontamento = new apontamentosGT();
 const UsuarioIntranet = new usuarioIntranet();
+const integracaoController = new IntegracaoController();
 
 export interface IApontamentoRequest {
     CategoriaId: number,
@@ -22,6 +24,10 @@ export function apontarGT(server: SocketServer, client: SocketIO): (...args: any
             const usuarioIntranet = await UsuarioIntranet.obterPorLogin(usuarioSocket);
 
             if (usuarioIntranet) {
+                 // finaliza última tarefa
+                 const ultima = await integracaoController.finalizarApontamentoGT(server, usuarioIntranet.sigla_pivotal ?? "", usuarioIntranet.api_token);
+            
+
                 const criado = await apontamento.criar({
                     id: 0,
                     login: usuarioIntranet.login,

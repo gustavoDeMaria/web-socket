@@ -146,7 +146,7 @@ export class IntegracaoController extends ControllerBase {
                         const login = usuarioIntranet.login ?? "";
 
                         // finaliza última tarefa
-                        const ultima = await this.finalizarApontamentoGT(server, pivotal, usuarioIntranet.api_token);
+                        const ultima = await this.finalizarApontamentoGT(server, pivotal.usuario, usuarioIntranet.api_token);
 
                         console.log("ultima", ultima)
 
@@ -181,11 +181,11 @@ export class IntegracaoController extends ControllerBase {
 
     }
 
-    async finalizarApontamentoGT(server: SocketServer, pivotal: IPivotalStory, api_token: string | null) {
+    async finalizarApontamentoGT(server: SocketServer, usuarioPivotal: string, api_token: string | null) {
 
         try {
             //obtem usuario
-            const usuarioIntranet = await apontamentoDaIntranet.obterPorLoginPivotal(pivotal.usuario);
+            const usuarioIntranet = await apontamentoDaIntranet.obterPorLoginPivotal(usuarioPivotal);
 
             if (usuarioIntranet && usuarioIntranet.login) {
 
