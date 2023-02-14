@@ -7,8 +7,7 @@ import { Server, createServer } from "http";
 import DependecyService from "./dependencyInjection/DependecyService";
 import { IntegracaoController } from "./controllers/integracaoController";
 import { SocketServer } from "./webSocket/SocketServer";
-
-import fs from 'fs';
+import path from "path";
 
 export default class Application implements IApplication {
 
@@ -23,6 +22,8 @@ export default class Application implements IApplication {
         this.Express = express();
 
         this.httpServer = createServer(this.Express);
+
+        this.Express.use("/update", express.static(path.resolve(__dirname, "update")));
     }
 
     public async StartAsync(): Promise<void> {

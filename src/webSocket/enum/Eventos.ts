@@ -15,5 +15,7 @@ export enum Eventos {
     apontamento_request = "apontamento-request",
     apontamento_sucesso = "apontamento-sucesso",
     solicita_tarefa_atual_request = "solicita-tarefa-atual-request",
-    solicita_tarefa_atual_response = "solicita-tarefa-atual-response"
+    solicita_tarefa_atual_response = "solicita-tarefa-atual-response",
+    solicitacao_versao_atual_request = "solicitacao-versao-atual-request",
+    solicitacao_versao_atual_response = "solicitacao-versao-atual-response",
 }
