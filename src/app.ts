@@ -24,6 +24,8 @@ export default class Application implements IApplication {
         this.httpServer = createServer(this.Express);
 
         this.Express.use("/update", express.static(path.resolve(__dirname, "update")));
+
+        process.env.BASE__dirname = __dirname;
     }
 
     public async StartAsync(): Promise<void> {
