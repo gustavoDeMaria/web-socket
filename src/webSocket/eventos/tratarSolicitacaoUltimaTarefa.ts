@@ -17,7 +17,7 @@ export function tratarSolicitacaoUltimaTarefa(server: SocketServer, client: Sock
             const categoria = await Categorias.obterPorID(ultima?.atividade ?? -1, ultima?.depto_id ?? -1);
 
             if (ultima && categoria) {
-                server.enviarMensagem(Eventos.solicita_tarefa_atual_response, { categoria: categoria.nome, inicio: ultima.datahoraini});
+                server.enviarMensagemTo(client.id, Eventos.solicita_tarefa_atual_response, { categoria: categoria.nome, inicio: ultima.datahoraini});
             }
         }
     };
